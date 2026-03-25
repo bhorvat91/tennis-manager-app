@@ -34,7 +34,7 @@
 | Backend API | ASP.NET Core Web API (.NET 8+) |
 | Baza podataka | Supabase (PostgreSQL) |
 | ORM | Entity Framework Core + Npgsql provider |
-| Web frontend | Blazor WebAssembly ili React (TBD) |
+| Web frontend | Blazor WebAssembly |
 | Mobilne aplikacije | .NET MAUI |
 | Autentikacija | Supabase Auth + JWT |
 | Pohrana datoteka | Supabase Storage |
@@ -52,7 +52,7 @@ Aplikacija slijedi **API-first** pristup: svi klijenti (web, mobilni) komunicira
 │                                                          │
 │   ┌─────────────────┐        ┌──────────────────────┐   │
 │   │   Web frontend   │        │  Mobilna aplikacija  │   │
-│   │ (Blazor / React) │        │     (.NET MAUI)      │   │
+│   │ (Blazor WASM)    │        │     (.NET MAUI)      │   │
 │   └────────┬────────┘        └──────────┬───────────┘   │
 └────────────┼─────────────────────────────┼───────────────┘
              │  HTTPS / REST + JWT          │
@@ -596,7 +596,7 @@ Svi endpointi su prefiksirani s `/api/v1`.
 **Cilj:** Korisnički sučelje dostupno putem preglednika.
 
 **Zadaci:**
-- [ ] Odabir frameworka (Blazor WASM ili React)
+- [ ] Inicijalizacija Blazor WebAssembly projekta
 - [ ] Autentikacija (prijava, registracija, reset lozinke)
 - [ ] Dashboard za igrača (moji tereni, moji mečevi, moje lige)
 - [ ] Dashboard za admina (pregled kluba, upiti za članstvo)
@@ -756,7 +756,7 @@ TennisManager/
 │   └── TennisManager.API.Tests/
 │
 └── clients/
-    ├── TennisManager.Web/                     # Blazor WASM ili React
+    ├── TennisManager.Web/                     # Blazor WebAssembly
     └── TennisManager.Mobile/                  # .NET MAUI
 ```
 
