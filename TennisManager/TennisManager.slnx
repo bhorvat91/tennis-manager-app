@@ -1,0 +1,13 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/TennisManager.API/TennisManager.API.csproj" />
+    <Project Path="src/TennisManager.Application/TennisManager.Application.csproj" />
+    <Project Path="src/TennisManager.Domain/TennisManager.Domain.csproj" />
+    <Project Path="src/TennisManager.Infrastructure/TennisManager.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/TennisManager.API.Tests/TennisManager.API.Tests.csproj" />
+    <Project Path="tests/TennisManager.Application.Tests/TennisManager.Application.Tests.csproj" />
+    <Project Path="tests/TennisManager.Domain.Tests/TennisManager.Domain.Tests.csproj" />
+  </Folder>
+</Solution>
