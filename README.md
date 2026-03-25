@@ -149,7 +149,7 @@ Za detaljan pregled strukture projekta i Clean Architecture pristupa, pogledaj [
 | ⬜ | Podsjetnik prije termina | - | - |
 | ⬜ | Notifikacija za članstvo | - | - |
 
-### Faza 6 – Web frontend (Blazor WASM)
+### Faza 6 – Web frontend (Blazor WebAssembly)
 
 | Status | Feature | Datum završetka | Napomene |
 |--------|---------|-----------------|----------|
