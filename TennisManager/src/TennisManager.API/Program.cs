@@ -1,7 +1,16 @@
+using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using TennisManager.API.Middleware;
+using TennisManager.Application.Authorization;
+using TennisManager.Application.Common.Interfaces;
+using TennisManager.Domain.Enums;
+using TennisManager.Domain.Interfaces.Repositories;
 using TennisManager.Infrastructure.Persistence;
+using TennisManager.Infrastructure.Repositories;
+using TennisManager.Infrastructure.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -44,16 +53,51 @@ builder.Services.AddSwaggerGen(options =>
     });
 });
 
-// Authentication (JWT Bearer – placeholder, configure issuer/audience via appsettings)
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer();
+// HttpContext accessor (required for CurrentUserService and ClubRoleHandler)
+builder.Services.AddHttpContextAccessor();
 
-// Authorization
-builder.Services.AddAuthorization();
+// Authentication (JWT Bearer – Supabase)
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = false,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = $"https://{builder.Configuration["Supabase:ProjectId"]}.supabase.co/auth/v1",
+            IssuerSigningKey = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(builder.Configuration["Supabase:JwtSecret"] ?? string.Empty))
+        };
+    });
+
+// Authorization policies (RBAC)
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("ClubAdmin", policy =>
+        policy.Requirements.Add(new ClubRoleRequirement(ClubRole.Admin)));
+    options.AddPolicy("ClubCoachOrAdmin", policy =>
+        policy.Requirements.Add(new ClubRoleRequirement(ClubRole.Admin, ClubRole.Coach)));
+    options.AddPolicy("ClubMember", policy =>
+        policy.Requirements.Add(new ClubRoleRequirement(ClubRole.Admin, ClubRole.Coach, ClubRole.Player)));
+});
+
+builder.Services.AddSingleton<IAuthorizationHandler, ClubRoleHandler>();
 
 // EF Core DbContext (PostgreSQL via Npgsql)
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+// Repositories
+builder.Services.AddScoped<IClubRepository, ClubRepository>();
+builder.Services.AddScoped<ICourtRepository, CourtRepository>();
+builder.Services.AddScoped<IClubMemberRepository, ClubMemberRepository>();
+builder.Services.AddScoped<ICourtSettingsRepository, CourtSettingsRepository>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+
+// Services
+builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
 
 // CORS
 builder.Services.AddCors(options =>

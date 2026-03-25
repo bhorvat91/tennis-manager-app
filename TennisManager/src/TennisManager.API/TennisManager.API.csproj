@@ -14,6 +14,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\TennisManager.Infrastructure\TennisManager.Infrastructure.csproj" />
+    <ProjectReference Include="..\TennisManager.Application\TennisManager.Application.csproj" />
   </ItemGroup>
 
 </Project>
