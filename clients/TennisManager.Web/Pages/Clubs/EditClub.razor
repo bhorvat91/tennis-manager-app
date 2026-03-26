@@ -1,0 +1,105 @@
+@page "/clubs/{Id:guid}/edit"
+@attribute [Authorize]
+@inject ClubService ClubService
+@inject NavigationManager Navigation
+
+<PageTitle>Uredi klub</PageTitle>
+
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-md-7">
+            <h2 class="mb-4">Uredi klub</h2>
+            @if (_loading)
+            {
+                <LoadingSpinner />
+            }
+            else
+            {
+                <ErrorAlert Message="@_errorMessage" />
+                <div class="card shadow-sm">
+                    <div class="card-body p-4">
+                        <EditForm Model="@_model" OnValidSubmit="HandleUpdate">
+                            <DataAnnotationsValidator />
+                            <div class="mb-3">
+                                <label class="form-label">Naziv</label>
+                                <InputText class="form-control" @bind-Value="_model.Name" />
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Opis</label>
+                                <InputTextArea class="form-control" @bind-Value="_model.Description" rows="3" />
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Adresa</label>
+                                <InputText class="form-control" @bind-Value="_model.Address" />
+                            </div>
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label">Grad</label>
+                                    <InputText class="form-control" @bind-Value="_model.City" />
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Država</label>
+                                    <InputText class="form-control" @bind-Value="_model.Country" />
+                                </div>
+                            </div>
+                            <div class="form-check mt-3">
+                                <InputCheckbox class="form-check-input" @bind-Value="_model.IsActive" />
+                                <label class="form-check-label">Aktivan</label>
+                            </div>
+                            <div class="mt-4 d-flex gap-2">
+                                <button type="submit" class="btn btn-success" disabled="@_saving">
+                                    @if (_saving) { <span class="spinner-border spinner-border-sm me-2"></span> }
+                                    Spremi
+                                </button>
+                                <a href="/clubs/@Id" class="btn btn-secondary">Odustani</a>
+                            </div>
+                        </EditForm>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter] public Guid Id { get; set; }
+    private UpdateClubRequest _model = new();
+    private bool _loading = true;
+    private bool _saving;
+    private string? _errorMessage;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            var club = await ClubService.GetClubAsync(Id);
+            if (club is not null)
+            {
+                _model = new UpdateClubRequest
+                {
+                    Name = club.Name,
+                    Description = club.Description,
+                    Address = club.Address,
+                    City = club.City,
+                    Country = club.Country,
+                    IsActive = club.IsActive
+                };
+            }
+        }
+        catch { _errorMessage = "Greška pri učitavanju kluba."; }
+        finally { _loading = false; }
+    }
+
+    private async Task HandleUpdate()
+    {
+        _saving = true;
+        _errorMessage = null;
+        try
+        {
+            await ClubService.UpdateClubAsync(Id, _model);
+            Navigation.NavigateTo($"/clubs/{Id}");
+        }
+        catch { _errorMessage = "Greška pri ažuriranju kluba."; }
+        finally { _saving = false; }
+    }
+}

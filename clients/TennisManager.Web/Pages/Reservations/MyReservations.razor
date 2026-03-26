@@ -1,0 +1,74 @@
+@page "/my-reservations"
+@attribute [Authorize]
+@inject ReservationService ReservationService
+
+<PageTitle>Moje rezervacije</PageTitle>
+
+<div class="container py-4">
+    <h2 class="mb-4">Moje rezervacije</h2>
+    @if (_loading) { <LoadingSpinner /> }
+    else if (_errorMessage is not null) { <ErrorAlert Message="@_errorMessage" /> }
+    else
+    {
+        <h5>Nadolazeće</h5>
+        @if (_upcoming.Count == 0)
+        {
+            <EmptyState Message="Nema nadolazećih rezervacija." />
+        }
+        else
+        {
+            <div class="list-group mb-4">
+                @foreach (var r in _upcoming)
+                {
+                    <a href="/clubs/@r.CourtId/reservations/@r.Id" class="list-group-item list-group-item-action">
+                        <div class="d-flex justify-content-between">
+                            <strong>@r.CourtName</strong>
+                            <span class="badge bg-primary">@r.Type</span>
+                        </div>
+                        <small class="text-muted">@r.StartTime.ToString("dd.MM.yyyy HH:mm") – @r.EndTime.ToString("HH:mm")</small>
+                    </a>
+                }
+            </div>
+        }
+
+        <h5>Prošle</h5>
+        @if (_past.Count == 0)
+        {
+            <EmptyState Message="Nema prošlih rezervacija." />
+        }
+        else
+        {
+            <div class="list-group">
+                @foreach (var r in _past)
+                {
+                    <div class="list-group-item">
+                        <div class="d-flex justify-content-between">
+                            <strong>@r.CourtName</strong>
+                            <span class="badge bg-secondary">@r.Status</span>
+                        </div>
+                        <small class="text-muted">@r.StartTime.ToString("dd.MM.yyyy HH:mm") – @r.EndTime.ToString("HH:mm")</small>
+                    </div>
+                }
+            </div>
+        }
+    }
+</div>
+
+@code {
+    private List<ReservationDto> _upcoming = new();
+    private List<ReservationDto> _past = new();
+    private bool _loading = true;
+    private string? _errorMessage;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            var all = await ReservationService.GetMyReservationsAsync();
+            _upcoming = all.Where(r => r.StartTime >= DateTime.Now).OrderBy(r => r.StartTime).ToList();
+            _past = all.Where(r => r.StartTime < DateTime.Now).OrderByDescending(r => r.StartTime).ToList();
+        }
+        catch { _errorMessage = "Greška pri učitavanju rezervacija."; }
+        finally { _loading = false; }
+    }
+}

@@ -1,0 +1,63 @@
+@page "/login"
+@inject AuthService AuthService
+@inject AuthStateProvider AuthStateProvider
+@inject NavigationManager Navigation
+
+<PageTitle>Prijava</PageTitle>
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-5">
+            <div class="card shadow-sm">
+                <div class="card-body p-4">
+                    <h4 class="card-title mb-4 text-center">Prijava</h4>
+                    <ErrorAlert Message="@_errorMessage" />
+                    <EditForm Model="@_model" OnValidSubmit="HandleLogin">
+                        <DataAnnotationsValidator />
+                        <div class="mb-3">
+                            <label class="form-label">Email</label>
+                            <InputText class="form-control" @bind-Value="_model.Email" type="email" />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Lozinka</label>
+                            <InputText class="form-control" @bind-Value="_model.Password" type="password" />
+                        </div>
+                        <button type="submit" class="btn btn-success w-100" disabled="@_loading">
+                            @if (_loading) { <span class="spinner-border spinner-border-sm me-2"></span> }
+                            Prijavi se
+                        </button>
+                    </EditForm>
+                    <hr />
+                    <p class="text-center mb-0">Nemate račun? <a href="/register">Registrirajte se</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    private LoginRequest _model = new();
+    private string? _errorMessage;
+    private bool _loading;
+
+    private async Task HandleLogin()
+    {
+        _loading = true;
+        _errorMessage = null;
+        try
+        {
+            var result = await AuthService.LoginAsync(_model);
+            if (result?.Token is not null)
+            {
+                await AuthService.SetTokenAsync(result.Token);
+                AuthStateProvider.NotifyAuthStateChanged();
+                Navigation.NavigateTo("/dashboard");
+            }
+        }
+        catch
+        {
+            _errorMessage = "Prijava neuspješna. Provjerite email i lozinku.";
+        }
+        finally { _loading = false; }
+    }
+}

@@ -1,0 +1,51 @@
+@page "/clubs/{ClubId:guid}/matches"
+@attribute [Authorize]
+@inject MatchService MatchService
+
+<PageTitle>Mečevi</PageTitle>
+
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Mečevi</h2>
+        <a href="/clubs/@ClubId/matches/create" class="btn btn-success">
+            <i class="bi bi-plus-lg me-1"></i> Novi meč
+        </a>
+    </div>
+    @if (_loading) { <LoadingSpinner /> }
+    else if (_errorMessage is not null) { <ErrorAlert Message="@_errorMessage" /> }
+    else if (_matches.Count == 0) { <EmptyState Message="Nema mečeva." /> }
+    else
+    {
+        <div class="list-group">
+            @foreach (var m in _matches)
+            {
+                <a href="/clubs/@ClubId/matches/@m.Id" class="list-group-item list-group-item-action">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <span class="badge bg-primary me-2">@m.Type</span>
+                            @string.Join(" / ", m.Team1Players) vs @string.Join(" / ", m.Team2Players)
+                        </div>
+                        <div>
+                            <span class="badge bg-secondary me-2">@m.Status</span>
+                            <small class="text-muted">@m.ScheduledAt.ToString("dd.MM.yyyy")</small>
+                        </div>
+                    </div>
+                </a>
+            }
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter] public Guid ClubId { get; set; }
+    private List<MatchDto> _matches = new();
+    private bool _loading = true;
+    private string? _errorMessage;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try { _matches = await MatchService.GetMatchesAsync(ClubId); }
+        catch { _errorMessage = "Greška pri učitavanju mečeva."; }
+        finally { _loading = false; }
+    }
+}

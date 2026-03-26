@@ -1,0 +1,10 @@
+@if (Message is not null)
+{
+    <div class="alert alert-danger" role="alert">
+        <i class="bi bi-exclamation-triangle-fill me-2"></i>@Message
+    </div>
+}
+
+@code {
+    [Parameter] public string? Message { get; set; }
+}

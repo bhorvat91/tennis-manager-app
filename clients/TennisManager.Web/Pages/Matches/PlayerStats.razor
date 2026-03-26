@@ -1,0 +1,62 @@
+@page "/clubs/{ClubId:guid}/stats/{UserId:guid}"
+@attribute [Authorize]
+@inject MatchService MatchService
+
+<PageTitle>Statistika igrača</PageTitle>
+
+<div class="container py-4">
+    @if (_loading) { <LoadingSpinner /> }
+    else if (_stats is null) { <EmptyState Message="Statistika nije dostupna." /> }
+    else
+    {
+        <h2 class="mb-4">Statistika: @_stats.FullName</h2>
+        <div class="row g-3">
+            <div class="col-md-3">
+                <div class="card text-bg-primary text-center">
+                    <div class="card-body">
+                        <h5>Ukupno mečeva</h5>
+                        <p class="display-5">@_stats.TotalMatches</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-bg-success text-center">
+                    <div class="card-body">
+                        <h5>Pobjede</h5>
+                        <p class="display-5">@_stats.Wins</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-bg-danger text-center">
+                    <div class="card-body">
+                        <h5>Porazi</h5>
+                        <p class="display-5">@_stats.Losses</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-bg-info text-center">
+                    <div class="card-body">
+                        <h5>Postotak pobjeda</h5>
+                        <p class="display-5">@(_stats.TotalMatches > 0 ? $"{_stats.Wins * 100 / _stats.TotalMatches}%" : "N/A")</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter] public Guid ClubId { get; set; }
+    [Parameter] public Guid UserId { get; set; }
+    private PlayerStatsDto? _stats;
+    private bool _loading = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try { _stats = await MatchService.GetPlayerStatsAsync(ClubId, UserId); }
+        catch { }
+        finally { _loading = false; }
+    }
+}

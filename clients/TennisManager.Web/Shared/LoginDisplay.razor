@@ -1,0 +1,24 @@
+@inject NavigationManager Navigation
+
+<AuthorizeView>
+    <Authorized>
+        <span class="navbar-text text-white me-2">@context.User.Identity?.Name</span>
+        <button class="btn btn-outline-light btn-sm" @onclick="Logout">Odjava</button>
+    </Authorized>
+    <NotAuthorized>
+        <a class="btn btn-outline-light btn-sm me-2" href="/login">Prijava</a>
+        <a class="btn btn-light btn-sm" href="/register">Registracija</a>
+    </NotAuthorized>
+</AuthorizeView>
+
+@code {
+    [Inject] private AuthService AuthService { get; set; } = default!;
+    [Inject] private AuthStateProvider AuthStateProvider { get; set; } = default!;
+
+    private async Task Logout()
+    {
+        await AuthService.LogoutAsync();
+        AuthStateProvider.NotifyAuthStateChanged();
+        Navigation.NavigateTo("/", true);
+    }
+}

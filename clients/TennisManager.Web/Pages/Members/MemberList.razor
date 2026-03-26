@@ -1,0 +1,57 @@
+@page "/clubs/{ClubId:guid}/members"
+@attribute [Authorize]
+@inject MemberService MemberService
+
+<PageTitle>Članovi kluba</PageTitle>
+
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Članovi kluba</h2>
+        <a href="/clubs/@ClubId/members/pending" class="btn btn-outline-warning">Zahtjevi na čekanju</a>
+    </div>
+    @if (_loading) { <LoadingSpinner /> }
+    else if (_errorMessage is not null) { <ErrorAlert Message="@_errorMessage" /> }
+    else if (_members.Count == 0) { <EmptyState Message="Nema članova." /> }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead class="table-light">
+                    <tr>
+                        <th>Ime i prezime</th>
+                        <th>Email</th>
+                        <th>Uloga</th>
+                        <th>Status</th>
+                        <th>Datum učlanjenja</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var m in _members)
+                    {
+                        <tr>
+                            <td>@m.FirstName @m.LastName</td>
+                            <td>@m.Email</td>
+                            <td><span class="badge bg-success">@m.Role</span></td>
+                            <td><span class="badge bg-secondary">@m.Status</span></td>
+                            <td>@m.JoinedAt.ToString("dd.MM.yyyy")</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter] public Guid ClubId { get; set; }
+    private List<ClubMemberDto> _members = new();
+    private bool _loading = true;
+    private string? _errorMessage;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try { _members = await MemberService.GetMembersAsync(ClubId); }
+        catch { _errorMessage = "Greška pri učitavanju članova."; }
+        finally { _loading = false; }
+    }
+}

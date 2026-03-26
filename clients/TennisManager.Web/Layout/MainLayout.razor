@@ -1,0 +1,28 @@
+﻿@inherits LayoutComponentBase
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-success fixed-top shadow-sm">
+    <div class="container-fluid">
+        <a class="navbar-brand fw-bold" href="/">TennisManager 🎾</a>
+        <button class="navbar-toggler" type="button" @onclick="ToggleSidebar">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="d-flex align-items-center ms-auto gap-3">
+            <NotificationBadge />
+            <LoginDisplay />
+        </div>
+    </div>
+</nav>
+
+<div class="d-flex" style="margin-top:56px; min-height:calc(100vh - 56px);">
+    <div class="bg-dark text-white @(_sidebarCollapsed ? "d-none" : "") d-lg-block" style="min-width:220px; min-height:100%;">
+        <NavMenu />
+    </div>
+    <main class="flex-grow-1 p-4">
+        @Body
+    </main>
+</div>
+
+@code {
+    private bool _sidebarCollapsed = true;
+    private void ToggleSidebar() => _sidebarCollapsed = !_sidebarCollapsed;
+}

@@ -1,0 +1,74 @@
+@page "/clubs"
+@inject ClubService ClubService
+
+<PageTitle>Klubovi</PageTitle>
+
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Teniski klubovi</h2>
+        <AuthorizeView>
+            <Authorized>
+                <a href="/clubs/create" class="btn btn-success">
+                    <i class="bi bi-plus-lg me-1"></i> Dodaj klub
+                </a>
+            </Authorized>
+        </AuthorizeView>
+    </div>
+
+    <div class="mb-3">
+        <input class="form-control" type="search" placeholder="Pretraži klubove..." @bind="_search" @bind:event="oninput" />
+    </div>
+
+    @if (_loading)
+    {
+        <LoadingSpinner />
+    }
+    else if (_errorMessage is not null)
+    {
+        <ErrorAlert Message="@_errorMessage" />
+    }
+    else if (_filtered.Count == 0)
+    {
+        <EmptyState Message="Nema klubova za prikaz." />
+    }
+    else
+    {
+        <div class="row g-4">
+            @foreach (var club in _filtered)
+            {
+                <div class="col-md-4">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-body">
+                            <h5 class="card-title">@club.Name</h5>
+                            <p class="text-muted small mb-1"><i class="bi bi-geo-alt me-1"></i>@club.City, @club.Country</p>
+                            <p class="card-text">@club.Description</p>
+                            <p class="text-muted small"><i class="bi bi-people me-1"></i>@club.MemberCount članova</p>
+                        </div>
+                        <div class="card-footer bg-transparent">
+                            <a href="/clubs/@club.Id" class="btn btn-outline-success btn-sm">Detalji</a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
+
+@code {
+    private List<ClubDto> _clubs = new();
+    private string _search = string.Empty;
+    private bool _loading = true;
+    private string? _errorMessage;
+
+    private List<ClubDto> _filtered => string.IsNullOrWhiteSpace(_search)
+        ? _clubs
+        : _clubs.Where(c => c.Name.Contains(_search, StringComparison.OrdinalIgnoreCase)
+            || (c.City?.Contains(_search, StringComparison.OrdinalIgnoreCase) ?? false)).ToList();
+
+    protected override async Task OnInitializedAsync()
+    {
+        try { _clubs = await ClubService.GetClubsAsync(); }
+        catch { _errorMessage = "Greška pri učitavanju klubova."; }
+        finally { _loading = false; }
+    }
+}

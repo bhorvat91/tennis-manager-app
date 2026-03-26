@@ -1,0 +1,89 @@
+@page "/register"
+@inject AuthService AuthService
+@inject AuthStateProvider AuthStateProvider
+@inject NavigationManager Navigation
+
+<PageTitle>Registracija</PageTitle>
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-body p-4">
+                    <h4 class="card-title mb-4 text-center">Registracija</h4>
+                    <ErrorAlert Message="@_errorMessage" />
+                    <EditForm Model="@_model" OnValidSubmit="HandleRegister">
+                        <DataAnnotationsValidator />
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label">Ime</label>
+                                <InputText class="form-control" @bind-Value="_model.FirstName" />
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Prezime</label>
+                                <InputText class="form-control" @bind-Value="_model.LastName" />
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label">Email</label>
+                                <InputText class="form-control" @bind-Value="_model.Email" type="email" />
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label">Telefon</label>
+                                <InputText class="form-control" @bind-Value="_model.Phone" type="tel" />
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label">Lozinka</label>
+                                <InputText class="form-control" @bind-Value="_model.Password" type="password" />
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label">Potvrda lozinke</label>
+                                <input class="form-control" @bind="_confirmPassword" type="password" />
+                            </div>
+                            <div class="col-12">
+                                <button type="submit" class="btn btn-success w-100" disabled="@_loading">
+                                    @if (_loading) { <span class="spinner-border spinner-border-sm me-2"></span> }
+                                    Registriraj se
+                                </button>
+                            </div>
+                        </div>
+                    </EditForm>
+                    <hr />
+                    <p class="text-center mb-0">Već imate račun? <a href="/login">Prijavite se</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    private RegisterRequest _model = new();
+    private string _confirmPassword = string.Empty;
+    private string? _errorMessage;
+    private bool _loading;
+
+    private async Task HandleRegister()
+    {
+        if (_model.Password != _confirmPassword)
+        {
+            _errorMessage = "Lozinke se ne podudaraju.";
+            return;
+        }
+        _loading = true;
+        _errorMessage = null;
+        try
+        {
+            var result = await AuthService.RegisterAsync(_model);
+            if (result?.Token is not null)
+            {
+                await AuthService.SetTokenAsync(result.Token);
+                AuthStateProvider.NotifyAuthStateChanged();
+                Navigation.NavigateTo("/dashboard");
+            }
+        }
+        catch
+        {
+            _errorMessage = "Registracija neuspješna. Pokušajte ponovo.";
+        }
+        finally { _loading = false; }
+    }
+}

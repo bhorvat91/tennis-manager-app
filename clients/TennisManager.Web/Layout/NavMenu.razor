@@ -1,0 +1,39 @@
+﻿<nav class="d-flex flex-column p-3 h-100">
+    <AuthorizeView>
+        <Authorized>
+            <div class="mb-2 text-uppercase text-muted small fw-bold px-2">Glavni izbornik</div>
+            <NavLink class="nav-link text-white py-2" href="/dashboard" Match="NavLinkMatch.All">
+                <i class="bi bi-speedometer2 me-2"></i> Nadzorna ploča
+            </NavLink>
+            <NavLink class="nav-link text-white py-2" href="/my-reservations">
+                <i class="bi bi-calendar-check me-2"></i> Moje rezervacije
+            </NavLink>
+            <NavLink class="nav-link text-white py-2" href="/my-matches">
+                <i class="bi bi-trophy me-2"></i> Moji mečevi
+            </NavLink>
+            <NavLink class="nav-link text-white py-2" href="/notifications">
+                <i class="bi bi-bell me-2"></i> Notifikacije
+            </NavLink>
+            <NavLink class="nav-link text-white py-2" href="/profile">
+                <i class="bi bi-person-circle me-2"></i> Profil
+            </NavLink>
+
+            <hr class="border-secondary" />
+            <div class="mb-2 text-uppercase text-muted small fw-bold px-2">Klubovi</div>
+            <NavLink class="nav-link text-white py-2" href="/clubs">
+                <i class="bi bi-building me-2"></i> Svi klubovi
+            </NavLink>
+        </Authorized>
+        <NotAuthorized>
+            <NavLink class="nav-link text-white py-2" href="/clubs">
+                <i class="bi bi-building me-2"></i> Klubovi
+            </NavLink>
+            <NavLink class="nav-link text-white py-2" href="/login">
+                <i class="bi bi-box-arrow-in-right me-2"></i> Prijava
+            </NavLink>
+            <NavLink class="nav-link text-white py-2" href="/register">
+                <i class="bi bi-person-plus me-2"></i> Registracija
+            </NavLink>
+        </NotAuthorized>
+    </AuthorizeView>
+</nav>

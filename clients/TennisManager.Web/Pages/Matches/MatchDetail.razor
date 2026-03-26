@@ -1,0 +1,72 @@
+@page "/clubs/{ClubId:guid}/matches/{MatchId:guid}"
+@attribute [Authorize]
+@inject MatchService MatchService
+@inject NavigationManager Navigation
+
+<PageTitle>Detalji meča</PageTitle>
+
+<div class="container py-4">
+    @if (_loading) { <LoadingSpinner /> }
+    else if (_match is null) { <EmptyState Message="Meč nije pronađen." /> }
+    else
+    {
+        <ErrorAlert Message="@_errorMessage" />
+        <div class="card shadow-sm" style="max-width:600px">
+            <div class="card-body">
+                <h4 class="mb-3">Meč</h4>
+                <p><span class="badge bg-primary me-2">@_match.Type</span><span class="badge bg-secondary">@_match.Status</span></p>
+                <p>Datum: @_match.ScheduledAt.ToString("dd.MM.yyyy HH:mm")</p>
+                <div class="row text-center mt-3">
+                    <div class="col">
+                        <h6>Tim 1</h6>
+                        @foreach (var p in _match.Team1Players)
+                        {
+                            <span class="badge bg-primary d-block mb-1">@p</span>
+                        }
+                    </div>
+                    <div class="col-2 fw-bold align-self-center">vs</div>
+                    <div class="col">
+                        <h6>Tim 2</h6>
+                        @foreach (var p in _match.Team2Players)
+                        {
+                            <span class="badge bg-danger d-block mb-1">@p</span>
+                        }
+                    </div>
+                </div>
+
+                @if (_match.Result is not null)
+                {
+                    <hr />
+                    <h6>Rezultat</h6>
+                    <p>Pobjednik: <strong>@_match.Result.WinnerId</strong></p>
+                    @foreach (var s in _match.Result.Sets)
+                    {
+                        <span class="badge bg-light text-dark me-1">Set @s.SetNumber: @s.Team1Games-@s.Team2Games</span>
+                    }
+                }
+
+                <div class="mt-3 d-flex gap-2">
+                    @if (_match.Status == "scheduled")
+                    {
+                        <a href="/clubs/@ClubId/matches/@MatchId/result" class="btn btn-success btn-sm">Unesi rezultat</a>
+                    }
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter] public Guid ClubId { get; set; }
+    [Parameter] public Guid MatchId { get; set; }
+    private MatchDto? _match;
+    private bool _loading = true;
+    private string? _errorMessage;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try { _match = await MatchService.GetMatchAsync(ClubId, MatchId); }
+        catch { _errorMessage = "Greška pri učitavanju meča."; }
+        finally { _loading = false; }
+    }
+}

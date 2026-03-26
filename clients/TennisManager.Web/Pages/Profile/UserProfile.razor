@@ -1,0 +1,91 @@
+@page "/profile"
+@attribute [Authorize]
+@inject UserService UserService
+@using UserProfileModel = TennisManager.Web.Models.UserProfile
+
+<PageTitle>Moj profil</PageTitle>
+
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-md-7">
+            <h2 class="mb-4">Moj profil</h2>
+            @if (_loading) { <LoadingSpinner /> }
+            else
+            {
+                <ErrorAlert Message="@_errorMessage" />
+                @if (_successMessage is not null)
+                {
+                    <div class="alert alert-success">@_successMessage</div>
+                }
+                <div class="card shadow-sm">
+                    <div class="card-body p-4">
+                        <div class="mb-3">
+                            <label class="form-label">Email</label>
+                            <input class="form-control" value="@_profile?.Email" disabled />
+                        </div>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label">Ime</label>
+                                <input class="form-control" @bind="_updateRequest.FirstName" />
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Prezime</label>
+                                <input class="form-control" @bind="_updateRequest.LastName" />
+                            </div>
+                        </div>
+                        <div class="mt-3">
+                            <label class="form-label">Telefon</label>
+                            <input class="form-control" @bind="_updateRequest.Phone" type="tel" />
+                        </div>
+                        <button class="btn btn-success mt-4 w-100" @onclick="HandleUpdate" disabled="@_saving">
+                            @if (_saving) { <span class="spinner-border spinner-border-sm me-2"></span> }
+                            Spremi promjene
+                        </button>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@code {
+    private UserProfileModel? _profile;
+    private UpdateProfileRequest _updateRequest = new();
+    private bool _loading = true;
+    private bool _saving;
+    private string? _errorMessage;
+    private string? _successMessage;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            _profile = await UserService.GetCurrentUserAsync();
+            if (_profile is not null)
+            {
+                _updateRequest = new UpdateProfileRequest
+                {
+                    FirstName = _profile.FirstName,
+                    LastName = _profile.LastName,
+                    Phone = _profile.Phone
+                };
+            }
+        }
+        catch { _errorMessage = "Greška pri učitavanju profila."; }
+        finally { _loading = false; }
+    }
+
+    private async Task HandleUpdate()
+    {
+        _saving = true;
+        _errorMessage = null;
+        _successMessage = null;
+        try
+        {
+            _profile = await UserService.UpdateProfileAsync(_updateRequest);
+            _successMessage = "Profil uspješno ažuriran!";
+        }
+        catch { _errorMessage = "Greška pri ažuriranju profila."; }
+        finally { _saving = false; }
+    }
+}

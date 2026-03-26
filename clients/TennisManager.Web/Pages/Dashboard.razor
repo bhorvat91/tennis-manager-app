@@ -1,0 +1,134 @@
+@page "/dashboard"
+@attribute [Authorize]
+@inject ReservationService ReservationService
+@inject MatchService MatchService
+@inject NotificationService NotificationService
+@inject NavigationManager Navigation
+
+<PageTitle>Nadzorna ploča</PageTitle>
+
+<div class="container-fluid">
+    <h2 class="mb-4">Dobrodošli 👋</h2>
+
+    @if (_loading)
+    {
+        <LoadingSpinner />
+    }
+    else
+    {
+        <div class="row g-4 mb-4">
+            <div class="col-md-3">
+                <div class="card text-bg-success h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">Nadolazeće rezervacije</h5>
+                        <p class="display-6">@_upcomingReservations.Count</p>
+                        <a href="/my-reservations" class="btn btn-light btn-sm mt-2">Prikaži sve</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-bg-primary h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">Moji mečevi</h5>
+                        <p class="display-6">@_recentMatches.Count</p>
+                        <a href="/my-matches" class="btn btn-light btn-sm mt-2">Prikaži sve</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-bg-warning h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">Nepročitane notifikacije</h5>
+                        <p class="display-6">@_unreadCount</p>
+                        <a href="/notifications" class="btn btn-light btn-sm mt-2">Prikaži sve</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-bg-info h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">Brze radnje</h5>
+                        <a href="/clubs" class="btn btn-light btn-sm mt-2 me-2">Nova rezervacija</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header fw-bold">Nadolazeće rezervacije</div>
+                    <div class="card-body p-0">
+                        @if (_upcomingReservations.Count == 0)
+                        {
+                            <EmptyState Message="Nema nadolazećih rezervacija." />
+                        }
+                        else
+                        {
+                            <ul class="list-group list-group-flush">
+                                @foreach (var r in _upcomingReservations.Take(5))
+                                {
+                                    <li class="list-group-item">
+                                        <strong>@r.CourtName</strong> &mdash; @r.StartTime.ToString("dd.MM. HH:mm")
+                                        <span class="badge bg-secondary ms-2">@r.Type</span>
+                                    </li>
+                                }
+                            </ul>
+                        }
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header fw-bold">Nedavni mečevi</div>
+                    <div class="card-body p-0">
+                        @if (_recentMatches.Count == 0)
+                        {
+                            <EmptyState Message="Nema nedavnih mečeva." />
+                        }
+                        else
+                        {
+                            <ul class="list-group list-group-flush">
+                                @foreach (var m in _recentMatches.Take(5))
+                                {
+                                    <li class="list-group-item">
+                                        <span class="badge bg-primary me-2">@m.Type</span>
+                                        @m.ScheduledAt.ToString("dd.MM.yyyy")
+                                        <span class="badge bg-secondary ms-2">@m.Status</span>
+                                    </li>
+                                }
+                            </ul>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@code {
+    private bool _loading = true;
+    private List<ReservationDto> _upcomingReservations = new();
+    private List<MatchDto> _recentMatches = new();
+    private int _unreadCount;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            var reservationsTask = ReservationService.GetMyReservationsAsync();
+            var matchesTask = MatchService.GetMyMatchesAsync();
+            var countTask = NotificationService.GetUnreadCountAsync();
+            await Task.WhenAll(reservationsTask, matchesTask, countTask);
+
+            _upcomingReservations = (await reservationsTask)
+                .Where(r => r.StartTime >= DateTime.Now)
+                .OrderBy(r => r.StartTime)
+                .ToList();
+            _recentMatches = await matchesTask;
+            _unreadCount = await countTask;
+        }
+        catch { }
+        finally { _loading = false; }
+    }
+}
