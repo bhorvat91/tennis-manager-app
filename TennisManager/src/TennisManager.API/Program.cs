@@ -97,6 +97,7 @@ builder.Services.AddScoped<ICourtSettingsRepository, CourtSettingsRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IReservationRepository, ReservationRepository>();
 builder.Services.AddScoped<IMatchRepository, MatchRepository>();
+builder.Services.AddScoped<ILeagueRepository, LeagueRepository>();
 
 // Services
 builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
