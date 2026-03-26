@@ -10,4 +10,7 @@
     <Project Path="tests/TennisManager.Application.Tests/TennisManager.Application.Tests.csproj" />
     <Project Path="tests/TennisManager.Domain.Tests/TennisManager.Domain.Tests.csproj" />
   </Folder>
+  <Folder Name="/clients/">
+    <Project Path="../clients/TennisManager.Web/TennisManager.Web.csproj" />
+  </Folder>
 </Solution>
