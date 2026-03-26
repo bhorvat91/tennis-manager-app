@@ -99,35 +99,35 @@ Za detaljan pregled strukture projekta i Clean Architecture pristupa, pogledaj [
 
 | Status | Feature | Datum završetka | Napomene |
 |--------|---------|-----------------|----------|
-| ⬜ | Postavljanje Supabase projekta | - | - |
-| ⬜ | Inicijalizacija ASP.NET Core API projekta | - | - |
-| ⬜ | Supabase Auth + JWT integracija | - | - |
-| ⬜ | EF Core migracije (users, clubs, club_members, courts, court_settings) | - | - |
-| ⬜ | CRUD endpointi za klubove | - | - |
-| ⬜ | Upravljanje članovima (zahtjev, odobravanje, uloge) | - | - |
-| ⬜ | CRUD endpointi za terene | - | - |
-| ⬜ | Postavke kluba (trajanje termina, rok otkazivanja) | - | - |
-| ⬜ | Autorizacija po ulogama | - | - |
+| ✅ | Postavljanje Supabase projekta | 2026-03-25 | PR #3, #4 |
+| ✅ | Inicijalizacija ASP.NET Core API projekta | 2026-03-25 | PR #3, #4 |
+| ✅ | Supabase Auth + JWT integracija | 2026-03-25 | PR #3, #4 |
+| ✅ | EF Core migracije (users, clubs, club_members, courts, court_settings) | 2026-03-25 | PR #3, #4 |
+| ✅ | CRUD endpointi za klubove | 2026-03-25 | PR #3, #4 |
+| ✅ | Upravljanje članovima (zahtjev, odobravanje, uloge) | 2026-03-25 | PR #3, #4 |
+| ✅ | CRUD endpointi za terene | 2026-03-25 | PR #3, #4 |
+| ✅ | Postavke kluba (trajanje termina, rok otkazivanja) | 2026-03-25 | PR #3, #4 |
+| ✅ | Autorizacija po ulogama | 2026-03-25 | PR #3, #4 |
 
 ### Faza 2 – Sustav rezervacija
 
 | Status | Feature | Datum završetka | Napomene |
 |--------|---------|-----------------|----------|
-| ⬜ | Migracije: reservations, reservation_participants | - | - |
-| ⬜ | CRUD endpointi za rezervacije | - | - |
-| ⬜ | Validacija rezervacija (trajanje, preklapanje) | - | - |
-| ⬜ | Rok otkazivanja | - | - |
-| ⬜ | Provjera dostupnosti terena | - | - |
+| ✅ | Migracije: reservations, reservation_participants | 2026-03-26 | PR #5 |
+| ✅ | CRUD endpointi za rezervacije | 2026-03-26 | PR #5 |
+| ✅ | Validacija rezervacija (trajanje, preklapanje) | 2026-03-26 | PR #5 |
+| ✅ | Rok otkazivanja | 2026-03-26 | PR #5 |
+| ✅ | Provjera dostupnosti terena | 2026-03-26 | PR #5 |
 
 ### Faza 3 – Mečevi i rezultati
 
 | Status | Feature | Datum završetka | Napomene |
 |--------|---------|-----------------|----------|
-| ⬜ | Migracije: matches, match_players, match_results, match_sets | - | - |
-| ⬜ | CRUD endpointi za mečeve | - | - |
-| ⬜ | Unos i ažuriranje rezultata | - | - |
-| ⬜ | Vezanje meča uz rezervaciju | - | - |
-| ⬜ | Povijest mečeva i statistika | - | - |
+| ✅ | Migracije: matches, match_players, match_results, match_sets | 2026-03-26 | PR #6 |
+| ✅ | CRUD endpointi za mečeve | 2026-03-26 | PR #6 |
+| ✅ | Unos i ažuriranje rezultata | 2026-03-26 | PR #6 |
+| ✅ | Vezanje meča uz rezervaciju | 2026-03-26 | PR #6 |
+| ✅ | Povijest mečeva i statistika | 2026-03-26 | PR #6 |
 
 ### Faza 4 – Lige i turniri
 
