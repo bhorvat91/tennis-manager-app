@@ -1,0 +1,57 @@
+@page "/clubs/{ClubId:guid}/courts"
+@attribute [Authorize]
+@inject CourtService CourtService
+
+<PageTitle>Tereni</PageTitle>
+
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Tereni</h2>
+        <a href="/clubs/@ClubId/courts/create" class="btn btn-success">
+            <i class="bi bi-plus-lg me-1"></i> Dodaj teren
+        </a>
+    </div>
+    @if (_loading) { <LoadingSpinner /> }
+    else if (_errorMessage is not null) { <ErrorAlert Message="@_errorMessage" /> }
+    else if (_courts.Count == 0) { <EmptyState Message="Nema terena." /> }
+    else
+    {
+        <div class="row g-4">
+            @foreach (var c in _courts)
+            {
+                <div class="col-md-4">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-body">
+                            <h5 class="card-title">@c.Name</h5>
+                            <p>
+                                <span class="badge bg-success me-1">@c.Surface</span>
+                                <span class="badge bg-info text-dark">@c.Environment</span>
+                                @if (!c.IsActive)
+                                {
+                                    <span class="badge bg-secondary ms-1">Neaktivan</span>
+                                }
+                            </p>
+                        </div>
+                        <div class="card-footer bg-transparent">
+                            <a href="/clubs/@ClubId/courts/@c.Id/edit" class="btn btn-outline-secondary btn-sm">Uredi</a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter] public Guid ClubId { get; set; }
+    private List<CourtDto> _courts = new();
+    private bool _loading = true;
+    private string? _errorMessage;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try { _courts = await CourtService.GetCourtsAsync(ClubId); }
+        catch { _errorMessage = "Greška pri učitavanju terena."; }
+        finally { _loading = false; }
+    }
+}

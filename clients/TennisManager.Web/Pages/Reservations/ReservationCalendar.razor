@@ -1,0 +1,111 @@
+@page "/clubs/{ClubId:guid}/reservations"
+@attribute [Authorize]
+@inject ReservationService ReservationService
+@inject CourtService CourtService
+
+<PageTitle>Rezervacije</PageTitle>
+
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Rezervacije</h2>
+        <a href="/clubs/@ClubId/reservations/create" class="btn btn-success">
+            <i class="bi bi-plus-lg me-1"></i> Nova rezervacija
+        </a>
+    </div>
+
+    <div class="row g-3 mb-4">
+        <div class="col-md-4">
+            <label class="form-label">Teren</label>
+            <select class="form-select" @onchange="OnCourtChanged">
+                <option value="">Svi tereni</option>
+                @foreach (var c in _courts)
+                {
+                    <option value="@c.Id">@c.Name</option>
+                }
+            </select>
+        </div>
+        <div class="col-md-4">
+            <label class="form-label">Datum</label>
+            <input type="date" class="form-control" value="@_selectedDate.ToString("yyyy-MM-dd")" @onchange="OnDateChanged" />
+        </div>
+    </div>
+
+    @if (_loading) { <LoadingSpinner /> }
+    else if (_errorMessage is not null) { <ErrorAlert Message="@_errorMessage" /> }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table table-bordered text-center">
+                <thead class="table-success">
+                    <tr>
+                        <th>Sat</th>
+                        @foreach (var c in _courts.Where(c => _selectedCourtId == Guid.Empty || c.Id == _selectedCourtId))
+                        {
+                            <th>@c.Name</th>
+                        }
+                    </tr>
+                </thead>
+                <tbody>
+                    @for (int h = 7; h < 22; h++)
+                    {
+                        var hour = h;
+                        <tr>
+                            <td class="fw-bold">@($"{hour:00}:00")</td>
+                            @foreach (var c in _courts.Where(c => _selectedCourtId == Guid.Empty || c.Id == _selectedCourtId))
+                            {
+                                var res = _reservations.FirstOrDefault(r => r.CourtId == c.Id
+                                    && r.StartTime.Hour <= hour && r.EndTime.Hour > hour);
+                                <td class="@(res is not null ? "table-danger" : "table-success")">
+                                    @if (res is not null) { <small>@res.UserName</small> }
+                                    else { <small>Slobodno</small> }
+                                </td>
+                            }
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter] public Guid ClubId { get; set; }
+    private List<ReservationDto> _reservations = new();
+    private List<CourtDto> _courts = new();
+    private Guid _selectedCourtId;
+    private DateTime _selectedDate = DateTime.Today;
+    private bool _loading = true;
+    private string? _errorMessage;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            _courts = await CourtService.GetCourtsAsync(ClubId);
+            await LoadReservations();
+        }
+        catch { _errorMessage = "Greška pri učitavanju."; }
+        finally { _loading = false; }
+    }
+
+    private async Task LoadReservations()
+    {
+        try { _reservations = await ReservationService.GetReservationsAsync(ClubId, _selectedDate); }
+        catch { _errorMessage = "Greška pri učitavanju rezervacija."; }
+    }
+
+    private async Task OnDateChanged(ChangeEventArgs e)
+    {
+        if (DateTime.TryParse(e.Value?.ToString(), out var d))
+            _selectedDate = d;
+        await LoadReservations();
+    }
+
+    private void OnCourtChanged(ChangeEventArgs e)
+    {
+        if (Guid.TryParse(e.Value?.ToString(), out var id))
+            _selectedCourtId = id;
+        else
+            _selectedCourtId = Guid.Empty;
+    }
+}

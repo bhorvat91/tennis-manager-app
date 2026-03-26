@@ -1,0 +1,53 @@
+@page "/clubs/{ClubId:guid}/leagues"
+@attribute [Authorize]
+@inject LeagueService LeagueService
+
+<PageTitle>Lige</PageTitle>
+
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Lige</h2>
+        <a href="/clubs/@ClubId/leagues/create" class="btn btn-success">
+            <i class="bi bi-plus-lg me-1"></i> Nova liga
+        </a>
+    </div>
+    @if (_loading) { <LoadingSpinner /> }
+    else if (_errorMessage is not null) { <ErrorAlert Message="@_errorMessage" /> }
+    else if (_leagues.Count == 0) { <EmptyState Message="Nema liga." /> }
+    else
+    {
+        <div class="row g-4">
+            @foreach (var l in _leagues)
+            {
+                <div class="col-md-4">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-body">
+                            <h5 class="card-title">@l.Name</h5>
+                            <p class="card-text text-muted">@l.Description</p>
+                            <p>Format: <span class="badge bg-primary">@l.Format</span></p>
+                            <p>Status: <span class="badge bg-secondary">@l.Status</span></p>
+                            <p><i class="bi bi-people me-1"></i>@l.ParticipantCount sudionika</p>
+                        </div>
+                        <div class="card-footer bg-transparent">
+                            <a href="/clubs/@ClubId/leagues/@l.Id" class="btn btn-outline-success btn-sm">Detalji</a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter] public Guid ClubId { get; set; }
+    private List<LeagueDto> _leagues = new();
+    private bool _loading = true;
+    private string? _errorMessage;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try { _leagues = await LeagueService.GetLeaguesAsync(ClubId); }
+        catch { _errorMessage = "Greška pri učitavanju liga."; }
+        finally { _loading = false; }
+    }
+}

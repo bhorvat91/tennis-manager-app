@@ -1,0 +1,93 @@
+@page "/admin/club/{ClubId:guid}"
+@attribute [Authorize]
+@inject ClubService ClubService
+@inject MemberService MemberService
+@inject CourtService CourtService
+@inject ReservationService ReservationService
+
+<PageTitle>Admin – Nadzorna ploča kluba</PageTitle>
+
+<div class="container py-4">
+    <h2 class="mb-4">Admin – Nadzorna ploča kluba</h2>
+    @if (_loading) { <LoadingSpinner /> }
+    else if (_errorMessage is not null) { <ErrorAlert Message="@_errorMessage" /> }
+    else
+    {
+        <div class="row g-4 mb-4">
+            <div class="col-md-3">
+                <div class="card text-bg-primary text-center">
+                    <div class="card-body">
+                        <h5>Ukupno članova</h5>
+                        <p class="display-5">@_memberCount</p>
+                        <a href="/clubs/@ClubId/members" class="btn btn-light btn-sm">Upravljaj</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-bg-success text-center">
+                    <div class="card-body">
+                        <h5>Tereni</h5>
+                        <p class="display-5">@_courtCount</p>
+                        <a href="/clubs/@ClubId/courts" class="btn btn-light btn-sm">Upravljaj</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-bg-warning text-center">
+                    <div class="card-body">
+                        <h5>Zahtjevi na čekanju</h5>
+                        <p class="display-5">@_pendingCount</p>
+                        <a href="/clubs/@ClubId/members/pending" class="btn btn-light btn-sm">Pregled</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-bg-info text-center">
+                    <div class="card-body">
+                        <h5>Aktivne rezervacije</h5>
+                        <p class="display-5">@_reservationCount</p>
+                        <a href="/clubs/@ClubId/reservations" class="btn btn-light btn-sm">Prikaži</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header fw-bold">Brze radnje</div>
+            <div class="card-body d-flex flex-wrap gap-2">
+                <a href="/clubs/@ClubId/members" class="btn btn-outline-primary">Članovi</a>
+                <a href="/clubs/@ClubId/courts" class="btn btn-outline-success">Tereni</a>
+                <a href="/clubs/@ClubId/leagues" class="btn btn-outline-info">Lige</a>
+                <a href="/clubs/@ClubId/reservations" class="btn btn-outline-warning">Rezervacije</a>
+                <a href="/clubs/@ClubId/edit" class="btn btn-outline-secondary">Postavke kluba</a>
+            </div>
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter] public Guid ClubId { get; set; }
+    private int _memberCount;
+    private int _courtCount;
+    private int _pendingCount;
+    private int _reservationCount;
+    private bool _loading = true;
+    private string? _errorMessage;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            var members = await MemberService.GetMembersAsync(ClubId);
+            var courts = await CourtService.GetCourtsAsync(ClubId);
+            var pending = await MemberService.GetPendingRequestsAsync(ClubId);
+            var reservations = await ReservationService.GetReservationsAsync(ClubId, DateTime.Today);
+            _memberCount = members.Count;
+            _courtCount = courts.Count;
+            _pendingCount = pending.Count;
+            _reservationCount = reservations.Count;
+        }
+        catch { _errorMessage = "Greška pri učitavanju podataka."; }
+        finally { _loading = false; }
+    }
+}

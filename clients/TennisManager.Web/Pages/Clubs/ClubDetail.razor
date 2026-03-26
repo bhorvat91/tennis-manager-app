@@ -1,0 +1,83 @@
+@page "/clubs/{Id:guid}"
+@inject ClubService ClubService
+@inject MemberService MemberService
+@inject NavigationManager Navigation
+
+<PageTitle>@(_club?.Name ?? "Klub")</PageTitle>
+
+<div class="container py-4">
+    @if (_loading)
+    {
+        <LoadingSpinner />
+    }
+    else if (_errorMessage is not null)
+    {
+        <ErrorAlert Message="@_errorMessage" />
+    }
+    else if (_club is not null)
+    {
+        <div class="row g-4">
+            <div class="col-md-8">
+                <h2>@_club.Name</h2>
+                <p class="text-muted"><i class="bi bi-geo-alt me-1"></i>@_club.Address, @_club.City, @_club.Country</p>
+                <p>@_club.Description</p>
+                <p><i class="bi bi-people me-1"></i><strong>@_club.MemberCount</strong> članova</p>
+            </div>
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h6 class="card-title">Akcije</h6>
+                        <AuthorizeView>
+                            <Authorized>
+                                <button class="btn btn-success w-100 mb-2" @onclick="RequestMembership" disabled="@_requesting">
+                                    @if (_requesting) { <span class="spinner-border spinner-border-sm me-2"></span> }
+                                    Zatraži članstvo
+                                </button>
+                                <a href="/clubs/@Id/courts" class="btn btn-outline-secondary w-100 mb-2">Tereni</a>
+                                <a href="/clubs/@Id/reservations" class="btn btn-outline-secondary w-100 mb-2">Rezervacije</a>
+                                <a href="/clubs/@Id/leagues" class="btn btn-outline-secondary w-100">Lige</a>
+                            </Authorized>
+                            <NotAuthorized>
+                                <p class="text-muted small">Prijavite se za više opcija.</p>
+                                <a href="/login" class="btn btn-success w-100">Prijava</a>
+                            </NotAuthorized>
+                        </AuthorizeView>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        @if (_successMessage is not null)
+        {
+            <div class="alert alert-success mt-3">@_successMessage</div>
+        }
+    }
+</div>
+
+@code {
+    [Parameter] public Guid Id { get; set; }
+    private ClubDto? _club;
+    private bool _loading = true;
+    private bool _requesting;
+    private string? _errorMessage;
+    private string? _successMessage;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try { _club = await ClubService.GetClubAsync(Id); }
+        catch { _errorMessage = "Greška pri učitavanju kluba."; }
+        finally { _loading = false; }
+    }
+
+    private async Task RequestMembership()
+    {
+        _requesting = true;
+        try
+        {
+            await MemberService.RequestMembershipAsync(Id);
+            _successMessage = "Zahtjev za članstvo uspješno poslan!";
+        }
+        catch { _errorMessage = "Greška pri slanju zahtjeva."; }
+        finally { _requesting = false; }
+    }
+}

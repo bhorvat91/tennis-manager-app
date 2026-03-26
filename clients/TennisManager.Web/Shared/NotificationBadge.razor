@@ -1,0 +1,35 @@
+@inject NotificationService NotificationService
+@implements IDisposable
+
+<a class="nav-link position-relative text-white" href="/notifications">
+    <i class="bi bi-bell-fill fs-5"></i>
+    @if (_unreadCount > 0)
+    {
+        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+            @(_unreadCount > 99 ? "99+" : _unreadCount.ToString())
+        </span>
+    }
+</a>
+
+@code {
+    private int _unreadCount;
+    private Timer? _timer;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadUnreadCount();
+        _timer = new Timer(async _ =>
+        {
+            await LoadUnreadCount();
+            await InvokeAsync(StateHasChanged);
+        }, null, TimeSpan.FromSeconds(30), TimeSpan.FromSeconds(30));
+    }
+
+    private async Task LoadUnreadCount()
+    {
+        try { _unreadCount = await NotificationService.GetUnreadCountAsync(); }
+        catch { _unreadCount = 0; }
+    }
+
+    public void Dispose() => _timer?.Dispose();
+}

@@ -1,0 +1,68 @@
+@page "/clubs/{ClubId:guid}/members/{MemberId:guid}"
+@attribute [Authorize]
+@inject MemberService MemberService
+@inject NavigationManager Navigation
+
+<PageTitle>Detalji člana</PageTitle>
+
+<div class="container py-4">
+    @if (_loading) { <LoadingSpinner /> }
+    else if (_member is null) { <EmptyState Message="Član nije pronađen." /> }
+    else
+    {
+        <ErrorAlert Message="@_errorMessage" />
+        <div class="card shadow-sm" style="max-width:500px">
+            <div class="card-body">
+                <h4>@_member.FirstName @_member.LastName</h4>
+                <p class="text-muted">@_member.Email</p>
+                <p>Uloga: <span class="badge bg-success">@_member.Role</span></p>
+                <p>Status: <span class="badge bg-secondary">@_member.Status</span></p>
+                <p>Član od: @_member.JoinedAt.ToString("dd.MM.yyyy")</p>
+                <hr />
+                <label class="form-label fw-bold">Promijeni ulogu</label>
+                <div class="d-flex gap-2">
+                    <select class="form-select" @bind="_selectedRole">
+                        <option value="member">Član</option>
+                        <option value="admin">Admin</option>
+                        <option value="coach">Trener</option>
+                    </select>
+                    <button class="btn btn-primary" @onclick="UpdateRole" disabled="@_saving">Spremi</button>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter] public Guid ClubId { get; set; }
+    [Parameter] public Guid MemberId { get; set; }
+    private ClubMemberDto? _member;
+    private string _selectedRole = "member";
+    private bool _loading = true;
+    private bool _saving;
+    private string? _errorMessage;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            var members = await MemberService.GetMembersAsync(ClubId);
+            _member = members.FirstOrDefault(m => m.Id == MemberId);
+            if (_member is not null) _selectedRole = _member.Role;
+        }
+        catch { _errorMessage = "Greška pri učitavanju člana."; }
+        finally { _loading = false; }
+    }
+
+    private async Task UpdateRole()
+    {
+        _saving = true;
+        try
+        {
+            await MemberService.UpdateRoleAsync(ClubId, MemberId, _selectedRole);
+            if (_member is not null) _member.Role = _selectedRole;
+        }
+        catch { _errorMessage = "Greška pri ažuriranju uloge."; }
+        finally { _saving = false; }
+    }
+}

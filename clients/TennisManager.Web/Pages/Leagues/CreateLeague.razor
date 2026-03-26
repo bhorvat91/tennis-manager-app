@@ -1,0 +1,76 @@
+@page "/clubs/{ClubId:guid}/leagues/create"
+@attribute [Authorize]
+@inject LeagueService LeagueService
+@inject NavigationManager Navigation
+
+<PageTitle>Nova liga</PageTitle>
+
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-md-7">
+            <h2 class="mb-4">Nova liga</h2>
+            <ErrorAlert Message="@_errorMessage" />
+            <div class="card shadow-sm">
+                <div class="card-body p-4">
+                    <div class="mb-3">
+                        <label class="form-label">Naziv</label>
+                        <input class="form-control" @bind="_model.Name" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Opis</label>
+                        <textarea class="form-control" @bind="_model.Description" rows="3"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Format</label>
+                        <select class="form-select" @bind="_model.Format">
+                            <option value="roundrobin">Round Robin</option>
+                            <option value="elimination">Eliminacija</option>
+                        </select>
+                    </div>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Početak</label>
+                            <input type="date" class="form-control" @bind="_startDate" />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Kraj</label>
+                            <input type="date" class="form-control" @bind="_endDate" />
+                        </div>
+                    </div>
+                    <div class="mt-4 d-flex gap-2">
+                        <button class="btn btn-success" @onclick="HandleCreate" disabled="@_loading">
+                            @if (_loading) { <span class="spinner-border spinner-border-sm me-2"></span> }
+                            Spremi
+                        </button>
+                        <a href="/clubs/@ClubId/leagues" class="btn btn-secondary">Odustani</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter] public Guid ClubId { get; set; }
+    private CreateLeagueRequest _model = new() { Format = "roundrobin" };
+    private DateTime? _startDate;
+    private DateTime? _endDate;
+    private bool _loading;
+    private string? _errorMessage;
+
+    private async Task HandleCreate()
+    {
+        _loading = true;
+        _errorMessage = null;
+        _model.StartDate = _startDate;
+        _model.EndDate = _endDate;
+        try
+        {
+            var league = await LeagueService.CreateLeagueAsync(ClubId, _model);
+            if (league is not null)
+                Navigation.NavigateTo($"/clubs/{ClubId}/leagues/{league.Id}");
+        }
+        catch { _errorMessage = "Greška pri stvaranju lige."; }
+        finally { _loading = false; }
+    }
+}

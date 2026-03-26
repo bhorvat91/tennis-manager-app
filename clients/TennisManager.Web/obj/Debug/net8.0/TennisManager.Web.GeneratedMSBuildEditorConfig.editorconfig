@@ -1,0 +1,215 @@
+is_global = true
+build_property.EnableAotAnalyzer = 
+build_property.EnableSingleFileAnalyzer = 
+build_property.EnableTrimAnalyzer = false
+build_property.IncludeAllContentForSelfExtract = 
+build_property.TargetFramework = net8.0
+build_property.TargetFrameworkIdentifier = .NETCoreApp
+build_property.TargetFrameworkVersion = v8.0
+build_property.TargetPlatformMinVersion = 
+build_property.UsingMicrosoftNETSdkWeb = 
+build_property.ProjectTypeGuids = 
+build_property.InvariantGlobalization = false
+build_property.PlatformNeutralAssembly = 
+build_property.EnforceExtendedAnalyzerRules = 
+build_property._SupportedPlatformList = browser
+build_property.RootNamespace = TennisManager.Web
+build_property.RootNamespace = TennisManager.Web
+build_property.ProjectDir = /home/runner/work/tennis-manager-app/tennis-manager-app/clients/TennisManager.Web/
+build_property.EnableComHosting = 
+build_property.EnableGeneratedComInterfaceComImportInterop = false
+build_property.RazorLangVersion = 8.0
+build_property.SupportLocalizedComponentNames = 
+build_property.GenerateRazorMetadataSourceChecksumAttributes = 
+build_property.MSBuildProjectDirectory = /home/runner/work/tennis-manager-app/tennis-manager-app/clients/TennisManager.Web
+build_property._RazorSourceGeneratorDebug = 
+build_property.EffectiveAnalysisLevelStyle = 8.0
+build_property.EnableCodeStyleSeverity = 
+
+[/home/runner/work/tennis-manager-app/tennis-manager-app/clients/TennisManager.Web/App.razor]
+build_metadata.AdditionalFiles.TargetPath = QXBwLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/runner/work/tennis-manager-app/tennis-manager-app/clients/TennisManager.Web/Pages/Admin/ClubDashboard.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvQWRtaW4vQ2x1YkRhc2hib2FyZC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/runner/work/tennis-manager-app/tennis-manager-app/clients/TennisManager.Web/Pages/Auth/ForgotPassword.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvQXV0aC9Gb3Jnb3RQYXNzd29yZC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/runner/work/tennis-manager-app/tennis-manager-app/clients/TennisManager.Web/Pages/Auth/Login.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvQXV0aC9Mb2dpbi5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/runner/work/tennis-manager-app/tennis-manager-app/clients/TennisManager.Web/Pages/Auth/Register.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvQXV0aC9SZWdpc3Rlci5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/runner/work/tennis-manager-app/tennis-manager-app/clients/TennisManager.Web/Pages/Clubs/ClubDetail.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvQ2x1YnMvQ2x1YkRldGFpbC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/runner/work/tennis-manager-app/tennis-manager-app/clients/TennisManager.Web/Pages/Clubs/ClubList.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvQ2x1YnMvQ2x1Ykxpc3QucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/runner/work/tennis-manager-app/tennis-manager-app/clients/TennisManager.Web/Pages/Clubs/CreateClub.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvQ2x1YnMvQ3JlYXRlQ2x1Yi5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/runner/work/tennis-manager-app/tennis-manager-app/clients/TennisManager.Web/Pages/Clubs/EditClub.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvQ2x1YnMvRWRpdENsdWIucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/runner/work/tennis-manager-app/tennis-manager-app/clients/TennisManager.Web/Pages/Counter.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvQ291bnRlci5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/runner/work/tennis-manager-app/tennis-manager-app/clients/TennisManager.Web/Pages/Courts/CourtList.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvQ291cnRzL0NvdXJ0TGlzdC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/runner/work/tennis-manager-app/tennis-manager-app/clients/TennisManager.Web/Pages/Courts/CreateCourt.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvQ291cnRzL0NyZWF0ZUNvdXJ0LnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/runner/work/tennis-manager-app/tennis-manager-app/clients/TennisManager.Web/Pages/Courts/EditCourt.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvQ291cnRzL0VkaXRDb3VydC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/runner/work/tennis-manager-app/tennis-manager-app/clients/TennisManager.Web/Pages/Dashboard.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvRGFzaGJvYXJkLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/runner/work/tennis-manager-app/tennis-manager-app/clients/TennisManager.Web/Pages/Home.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvSG9tZS5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/runner/work/tennis-manager-app/tennis-manager-app/clients/TennisManager.Web/Pages/Index.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvSW5kZXgucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/runner/work/tennis-manager-app/tennis-manager-app/clients/TennisManager.Web/Pages/Leagues/CreateLeague.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvTGVhZ3Vlcy9DcmVhdGVMZWFndWUucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/runner/work/tennis-manager-app/tennis-manager-app/clients/TennisManager.Web/Pages/Leagues/LeagueDetail.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvTGVhZ3Vlcy9MZWFndWVEZXRhaWwucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/runner/work/tennis-manager-app/tennis-manager-app/clients/TennisManager.Web/Pages/Leagues/LeagueList.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvTGVhZ3Vlcy9MZWFndWVMaXN0LnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/runner/work/tennis-manager-app/tennis-manager-app/clients/TennisManager.Web/Pages/Leagues/Standings.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvTGVhZ3Vlcy9TdGFuZGluZ3MucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/runner/work/tennis-manager-app/tennis-manager-app/clients/TennisManager.Web/Pages/Matches/CreateMatch.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvTWF0Y2hlcy9DcmVhdGVNYXRjaC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/runner/work/tennis-manager-app/tennis-manager-app/clients/TennisManager.Web/Pages/Matches/EnterResult.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvTWF0Y2hlcy9FbnRlclJlc3VsdC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/runner/work/tennis-manager-app/tennis-manager-app/clients/TennisManager.Web/Pages/Matches/MatchDetail.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvTWF0Y2hlcy9NYXRjaERldGFpbC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/runner/work/tennis-manager-app/tennis-manager-app/clients/TennisManager.Web/Pages/Matches/MatchList.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvTWF0Y2hlcy9NYXRjaExpc3QucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/runner/work/tennis-manager-app/tennis-manager-app/clients/TennisManager.Web/Pages/Matches/MyMatches.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvTWF0Y2hlcy9NeU1hdGNoZXMucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/runner/work/tennis-manager-app/tennis-manager-app/clients/TennisManager.Web/Pages/Matches/PlayerStats.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvTWF0Y2hlcy9QbGF5ZXJTdGF0cy5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/runner/work/tennis-manager-app/tennis-manager-app/clients/TennisManager.Web/Pages/Members/MemberDetail.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvTWVtYmVycy9NZW1iZXJEZXRhaWwucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/runner/work/tennis-manager-app/tennis-manager-app/clients/TennisManager.Web/Pages/Members/MemberList.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvTWVtYmVycy9NZW1iZXJMaXN0LnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/runner/work/tennis-manager-app/tennis-manager-app/clients/TennisManager.Web/Pages/Members/PendingRequests.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvTWVtYmVycy9QZW5kaW5nUmVxdWVzdHMucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/runner/work/tennis-manager-app/tennis-manager-app/clients/TennisManager.Web/Pages/Notifications/NotificationList.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvTm90aWZpY2F0aW9ucy9Ob3RpZmljYXRpb25MaXN0LnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/runner/work/tennis-manager-app/tennis-manager-app/clients/TennisManager.Web/Pages/Profile/UserProfile.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvUHJvZmlsZS9Vc2VyUHJvZmlsZS5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/runner/work/tennis-manager-app/tennis-manager-app/clients/TennisManager.Web/Pages/Reservations/CreateReservation.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvUmVzZXJ2YXRpb25zL0NyZWF0ZVJlc2VydmF0aW9uLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/runner/work/tennis-manager-app/tennis-manager-app/clients/TennisManager.Web/Pages/Reservations/MyReservations.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvUmVzZXJ2YXRpb25zL015UmVzZXJ2YXRpb25zLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/runner/work/tennis-manager-app/tennis-manager-app/clients/TennisManager.Web/Pages/Reservations/ReservationCalendar.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvUmVzZXJ2YXRpb25zL1Jlc2VydmF0aW9uQ2FsZW5kYXIucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/runner/work/tennis-manager-app/tennis-manager-app/clients/TennisManager.Web/Pages/Reservations/ReservationDetail.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvUmVzZXJ2YXRpb25zL1Jlc2VydmF0aW9uRGV0YWlsLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/runner/work/tennis-manager-app/tennis-manager-app/clients/TennisManager.Web/Pages/Weather.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvV2VhdGhlci5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/runner/work/tennis-manager-app/tennis-manager-app/clients/TennisManager.Web/Shared/ConfirmDialog.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkL0NvbmZpcm1EaWFsb2cucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/runner/work/tennis-manager-app/tennis-manager-app/clients/TennisManager.Web/Shared/EmptyState.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkL0VtcHR5U3RhdGUucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/runner/work/tennis-manager-app/tennis-manager-app/clients/TennisManager.Web/Shared/ErrorAlert.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkL0Vycm9yQWxlcnQucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/runner/work/tennis-manager-app/tennis-manager-app/clients/TennisManager.Web/Shared/LoadingSpinner.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkL0xvYWRpbmdTcGlubmVyLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/runner/work/tennis-manager-app/tennis-manager-app/clients/TennisManager.Web/Shared/LoginDisplay.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkL0xvZ2luRGlzcGxheS5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/runner/work/tennis-manager-app/tennis-manager-app/clients/TennisManager.Web/Shared/NotificationBadge.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkL05vdGlmaWNhdGlvbkJhZGdlLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/runner/work/tennis-manager-app/tennis-manager-app/clients/TennisManager.Web/Shared/Pagination.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkL1BhZ2luYXRpb24ucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/runner/work/tennis-manager-app/tennis-manager-app/clients/TennisManager.Web/Shared/RedirectToLogin.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkL1JlZGlyZWN0VG9Mb2dpbi5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/runner/work/tennis-manager-app/tennis-manager-app/clients/TennisManager.Web/_Imports.razor]
+build_metadata.AdditionalFiles.TargetPath = X0ltcG9ydHMucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/runner/work/tennis-manager-app/tennis-manager-app/clients/TennisManager.Web/Layout/MainLayout.razor]
+build_metadata.AdditionalFiles.TargetPath = TGF5b3V0L01haW5MYXlvdXQucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = b-f3wh45vmt9
+
+[/home/runner/work/tennis-manager-app/tennis-manager-app/clients/TennisManager.Web/Layout/NavMenu.razor]
+build_metadata.AdditionalFiles.TargetPath = TGF5b3V0L05hdk1lbnUucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = b-ukv694qokv

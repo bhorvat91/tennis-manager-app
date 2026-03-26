@@ -1,0 +1,71 @@
+@page "/clubs/{ClubId:guid}/members/pending"
+@attribute [Authorize]
+@inject MemberService MemberService
+
+<PageTitle>Zahtjevi za članstvo</PageTitle>
+
+<div class="container py-4">
+    <h2 class="mb-4">Zahtjevi za članstvo</h2>
+    @if (_loading) { <LoadingSpinner /> }
+    else if (_errorMessage is not null) { <ErrorAlert Message="@_errorMessage" /> }
+    else if (_requests.Count == 0) { <EmptyState Message="Nema zahtjeva za članstvo." /> }
+    else
+    {
+        <div class="list-group">
+            @foreach (var r in _requests)
+            {
+                <div class="list-group-item d-flex justify-content-between align-items-center">
+                    <div>
+                        <strong>@r.FirstName @r.LastName</strong>
+                        <span class="text-muted ms-2">@r.Email</span>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <button class="btn btn-success btn-sm" @onclick="() => Approve(r.Id)">Odobri</button>
+                        <button class="btn btn-danger btn-sm" @onclick="() => Reject(r.Id)">Odbij</button>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    @if (_successMessage is not null)
+    {
+        <div class="alert alert-success mt-3">@_successMessage</div>
+    }
+</div>
+
+@code {
+    [Parameter] public Guid ClubId { get; set; }
+    private List<ClubMemberDto> _requests = new();
+    private bool _loading = true;
+    private string? _errorMessage;
+    private string? _successMessage;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try { _requests = await MemberService.GetPendingRequestsAsync(ClubId); }
+        catch { _errorMessage = "Greška pri učitavanju zahtjeva."; }
+        finally { _loading = false; }
+    }
+
+    private async Task Approve(Guid memberId)
+    {
+        try
+        {
+            await MemberService.ApproveMemberAsync(ClubId, memberId);
+            _requests.RemoveAll(r => r.Id == memberId);
+            _successMessage = "Zahtjev odobren.";
+        }
+        catch { _errorMessage = "Greška pri odobravanju."; }
+    }
+
+    private async Task Reject(Guid memberId)
+    {
+        try
+        {
+            await MemberService.RejectMemberAsync(ClubId, memberId);
+            _requests.RemoveAll(r => r.Id == memberId);
+            _successMessage = "Zahtjev odbijen.";
+        }
+        catch { _errorMessage = "Greška pri odbijanju."; }
+    }
+}

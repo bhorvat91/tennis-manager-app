@@ -1,0 +1,63 @@
+@page "/clubs/{ClubId:guid}/reservations/{ReservationId:guid}"
+@attribute [Authorize]
+@inject ReservationService ReservationService
+@inject NavigationManager Navigation
+
+<PageTitle>Detalji rezervacije</PageTitle>
+
+<div class="container py-4">
+    @if (_loading) { <LoadingSpinner /> }
+    else if (_reservation is null) { <EmptyState Message="Rezervacija nije pronađena." /> }
+    else
+    {
+        <ErrorAlert Message="@_errorMessage" />
+        <div class="card shadow-sm" style="max-width:500px">
+            <div class="card-body">
+                <h4>@_reservation.CourtName</h4>
+                <p class="text-muted">@_reservation.StartTime.ToString("dd.MM.yyyy HH:mm") – @_reservation.EndTime.ToString("HH:mm")</p>
+                <p>Korisnik: <strong>@_reservation.UserName</strong></p>
+                <p>Vrsta: <span class="badge bg-primary">@_reservation.Type</span></p>
+                <p>Status: <span class="badge bg-secondary">@_reservation.Status</span></p>
+                @if (_reservation.Notes is not null)
+                {
+                    <p>Napomena: @_reservation.Notes</p>
+                }
+                @if (_reservation.Status != "cancelled")
+                {
+                    <button class="btn btn-danger mt-2" @onclick="Cancel" disabled="@_cancelling">
+                        @if (_cancelling) { <span class="spinner-border spinner-border-sm me-2"></span> }
+                        Otkaži rezervaciju
+                    </button>
+                }
+            </div>
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter] public Guid ClubId { get; set; }
+    [Parameter] public Guid ReservationId { get; set; }
+    private ReservationDto? _reservation;
+    private bool _loading = true;
+    private bool _cancelling;
+    private string? _errorMessage;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try { _reservation = await ReservationService.GetReservationAsync(ClubId, ReservationId); }
+        catch { _errorMessage = "Greška pri učitavanju rezervacije."; }
+        finally { _loading = false; }
+    }
+
+    private async Task Cancel()
+    {
+        _cancelling = true;
+        try
+        {
+            await ReservationService.CancelReservationAsync(ClubId, ReservationId);
+            Navigation.NavigateTo($"/clubs/{ClubId}/reservations");
+        }
+        catch { _errorMessage = "Greška pri otkazivanju."; }
+        finally { _cancelling = false; }
+    }
+}

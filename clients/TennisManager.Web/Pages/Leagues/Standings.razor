@@ -1,0 +1,58 @@
+@page "/clubs/{ClubId:guid}/leagues/{LeagueId:guid}/standings"
+@attribute [Authorize]
+@inject LeagueService LeagueService
+
+<PageTitle>Ljestvica</PageTitle>
+
+<div class="container py-4">
+    <h2 class="mb-4">Ljestvica</h2>
+    @if (_loading) { <LoadingSpinner /> }
+    else if (_errorMessage is not null) { <ErrorAlert Message="@_errorMessage" /> }
+    else if (_standings.Count == 0) { <EmptyState Message="Nema podataka." /> }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table table-hover table-striped">
+                <thead class="table-success">
+                    <tr>
+                        <th>#</th>
+                        <th>Igrač</th>
+                        <th>Ukupno</th>
+                        <th>Pobjede</th>
+                        <th>Porazi</th>
+                        <th>Bodovi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for (int i = 0; i < _standings.Count; i++)
+                    {
+                        var s = _standings[i];
+                        <tr>
+                            <td>@(i + 1)</td>
+                            <td>@s.FullName</td>
+                            <td>@s.TotalMatches</td>
+                            <td>@s.Wins</td>
+                            <td>@s.Losses</td>
+                            <td><strong>@s.Points</strong></td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter] public Guid ClubId { get; set; }
+    [Parameter] public Guid LeagueId { get; set; }
+    private List<StandingDto> _standings = new();
+    private bool _loading = true;
+    private string? _errorMessage;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try { _standings = await LeagueService.GetStandingsAsync(ClubId, LeagueId); }
+        catch { _errorMessage = "Greška pri učitavanju ljestvice."; }
+        finally { _loading = false; }
+    }
+}

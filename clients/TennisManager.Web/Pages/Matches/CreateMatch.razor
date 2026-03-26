@@ -1,0 +1,109 @@
+@page "/clubs/{ClubId:guid}/matches/create"
+@attribute [Authorize]
+@inject MatchService MatchService
+@inject MemberService MemberService
+@inject NavigationManager Navigation
+
+<PageTitle>Novi meč</PageTitle>
+
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-md-7">
+            <h2 class="mb-4">Novi meč</h2>
+            <ErrorAlert Message="@_errorMessage" />
+            <div class="card shadow-sm">
+                <div class="card-body p-4">
+                    <div class="mb-3">
+                        <label class="form-label">Vrsta</label>
+                        <select class="form-select" @bind="_model.Type">
+                            <option value="singles">Singl</option>
+                            <option value="doubles">Dubl</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Zakazano za</label>
+                        <input type="datetime-local" class="form-control" @bind="_model.ScheduledAt" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Tim 1 – Igrač(i)</label>
+                        @foreach (var pid in _team1)
+                        {
+                            var member = _members.FirstOrDefault(m => m.UserId == pid);
+                            <span class="badge bg-primary me-1">@(member?.FirstName) @(member?.LastName)</span>
+                        }
+                        <select class="form-select mt-1" @onchange="e => AddToTeam(e, 1)">
+                            <option value="">Dodaj igrača...</option>
+                            @foreach (var m in _members.Where(m => !_team1.Contains(m.UserId) && !_team2.Contains(m.UserId)))
+                            {
+                                <option value="@m.UserId">@m.FirstName @m.LastName</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Tim 2 – Igrač(i)</label>
+                        @foreach (var pid in _team2)
+                        {
+                            var member = _members.FirstOrDefault(m => m.UserId == pid);
+                            <span class="badge bg-danger me-1">@(member?.FirstName) @(member?.LastName)</span>
+                        }
+                        <select class="form-select mt-1" @onchange="e => AddToTeam(e, 2)">
+                            <option value="">Dodaj igrača...</option>
+                            @foreach (var m in _members.Where(m => !_team1.Contains(m.UserId) && !_team2.Contains(m.UserId)))
+                            {
+                                <option value="@m.UserId">@m.FirstName @m.LastName</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <button class="btn btn-success" @onclick="HandleCreate" disabled="@_loading">
+                            @if (_loading) { <span class="spinner-border spinner-border-sm me-2"></span> }
+                            Spremi
+                        </button>
+                        <a href="/clubs/@ClubId/matches" class="btn btn-secondary">Odustani</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter] public Guid ClubId { get; set; }
+    private CreateMatchRequest _model = new() { Type = "singles", ScheduledAt = DateTime.Today.AddHours(10) };
+    private List<ClubMemberDto> _members = new();
+    private List<Guid> _team1 = new();
+    private List<Guid> _team2 = new();
+    private bool _loading;
+    private string? _errorMessage;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try { _members = await MemberService.GetMembersAsync(ClubId); }
+        catch { _errorMessage = "Greška pri učitavanju članova."; }
+    }
+
+    private void AddToTeam(ChangeEventArgs e, int team)
+    {
+        if (Guid.TryParse(e.Value?.ToString(), out var id))
+        {
+            if (team == 1) _team1.Add(id);
+            else _team2.Add(id);
+        }
+    }
+
+    private async Task HandleCreate()
+    {
+        _loading = true;
+        _errorMessage = null;
+        _model.Team1PlayerIds = _team1;
+        _model.Team2PlayerIds = _team2;
+        try
+        {
+            var match = await MatchService.CreateMatchAsync(ClubId, _model);
+            if (match is not null)
+                Navigation.NavigateTo($"/clubs/{ClubId}/matches/{match.Id}");
+        }
+        catch { _errorMessage = "Greška pri stvaranju meča."; }
+        finally { _loading = false; }
+    }
+}

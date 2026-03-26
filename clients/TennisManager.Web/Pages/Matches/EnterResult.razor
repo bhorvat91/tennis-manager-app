@@ -1,0 +1,99 @@
+@page "/clubs/{ClubId:guid}/matches/{MatchId:guid}/result"
+@attribute [Authorize]
+@inject MatchService MatchService
+@inject NavigationManager Navigation
+
+<PageTitle>Unos rezultata</PageTitle>
+
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <h2 class="mb-4">Unesi rezultat</h2>
+            @if (_loading) { <LoadingSpinner /> }
+            else
+            {
+                <ErrorAlert Message="@_errorMessage" />
+                <div class="card shadow-sm">
+                    <div class="card-body p-4">
+                        @if (_match is not null)
+                        {
+                            <div class="mb-3">
+                                <label class="form-label">Pobjednički tim</label>
+                                <select class="form-select" @bind="_request.WinnerId">
+                                    @foreach (var p in _match.Team1Players)
+                                    {
+                                        <option value="@p">Tim 1: @p</option>
+                                    }
+                                    @foreach (var p in _match.Team2Players)
+                                    {
+                                        <option value="@p">Tim 2: @p</option>
+                                    }
+                                </select>
+                            </div>
+                        }
+
+                        <h6 class="mt-3">Setovi</h6>
+                        @foreach (var (set, i) in _request.Sets.Select((s, i) => (s, i)))
+                        {
+                            <div class="row g-2 align-items-center mb-2">
+                                <div class="col-auto">Set @set.SetNumber</div>
+                                <div class="col">
+                                    <input type="number" class="form-control" @bind="set.Team1Games" min="0" max="7" placeholder="Tim 1" />
+                                </div>
+                                <div class="col-auto">–</div>
+                                <div class="col">
+                                    <input type="number" class="form-control" @bind="set.Team2Games" min="0" max="7" placeholder="Tim 2" />
+                                </div>
+                            </div>
+                        }
+
+                        <button class="btn btn-outline-secondary btn-sm mt-2" @onclick="AddSet">+ Dodaj set</button>
+
+                        <div class="mt-4 d-flex gap-2">
+                            <button class="btn btn-success" @onclick="HandleSubmit" disabled="@_saving">
+                                @if (_saving) { <span class="spinner-border spinner-border-sm me-2"></span> }
+                                Spremi rezultat
+                            </button>
+                            <a href="/clubs/@ClubId/matches/@MatchId" class="btn btn-secondary">Odustani</a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter] public Guid ClubId { get; set; }
+    [Parameter] public Guid MatchId { get; set; }
+    private MatchDto? _match;
+    private EnterResultRequest _request = new() { Sets = new List<MatchSetDto> { new() { SetNumber = 1 } } };
+    private bool _loading = true;
+    private bool _saving;
+    private string? _errorMessage;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try { _match = await MatchService.GetMatchAsync(ClubId, MatchId); }
+        catch { _errorMessage = "Greška pri učitavanju meča."; }
+        finally { _loading = false; }
+    }
+
+    private void AddSet()
+    {
+        _request.Sets.Add(new MatchSetDto { SetNumber = _request.Sets.Count + 1 });
+    }
+
+    private async Task HandleSubmit()
+    {
+        _saving = true;
+        _errorMessage = null;
+        try
+        {
+            await MatchService.EnterResultAsync(ClubId, MatchId, _request);
+            Navigation.NavigateTo($"/clubs/{ClubId}/matches/{MatchId}");
+        }
+        catch { _errorMessage = "Greška pri unosu rezultata."; }
+        finally { _saving = false; }
+    }
+}

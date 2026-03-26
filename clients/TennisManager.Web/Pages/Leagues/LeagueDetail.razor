@@ -1,0 +1,93 @@
+@page "/clubs/{ClubId:guid}/leagues/{LeagueId:guid}"
+@attribute [Authorize]
+@inject LeagueService LeagueService
+
+<PageTitle>@(_league?.Name ?? "Liga")</PageTitle>
+
+<div class="container py-4">
+    @if (_loading) { <LoadingSpinner /> }
+    else if (_league is null) { <EmptyState Message="Liga nije pronađena." /> }
+    else
+    {
+        <ErrorAlert Message="@_errorMessage" />
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h2>@_league.Name</h2>
+                <span class="badge bg-primary me-1">@_league.Format</span>
+                <span class="badge bg-secondary">@_league.Status</span>
+            </div>
+            <button class="btn btn-success" @onclick="Join" disabled="@_joining">Pridruži se</button>
+        </div>
+
+        <ul class="nav nav-tabs mb-4">
+            <li class="nav-item"><button class="nav-link @(_tab == 0 ? "active" : "")" @onclick='() => SetTab(0)'>Sudionici</button></li>
+            <li class="nav-item"><button class="nav-link @(_tab == 1 ? "active" : "")" @onclick='() => SetTab(1)'>Mečevi</button></li>
+            <li class="nav-item"><button class="nav-link @(_tab == 2 ? "active" : "")" @onclick='() => SetTab(2)'>Ljestvica</button></li>
+        </ul>
+
+        @if (_tab == 0)
+        {
+            @if (_participants.Count == 0) { <EmptyState Message="Nema sudionika." /> }
+            else
+            {
+                <ul class="list-group">
+                    @foreach (var p in _participants)
+                    {
+                        <li class="list-group-item">@p.FullName <small class="text-muted ms-2">@p.Email</small></li>
+                    }
+                </ul>
+            }
+        }
+        else if (_tab == 1)
+        {
+            @if (_leagueMatches.Count == 0) { <EmptyState Message="Nema mečeva." /> }
+            else
+            {
+                <ul class="list-group">
+                    @foreach (var lm in _leagueMatches)
+                    {
+                        <li class="list-group-item">Kolo: @lm.Round</li>
+                    }
+                </ul>
+            }
+        }
+        else
+        {
+            <a href="/clubs/@ClubId/leagues/@LeagueId/standings" class="btn btn-outline-primary mb-3">Prikaži ljestvicu</a>
+        }
+    }
+</div>
+
+@code {
+    [Parameter] public Guid ClubId { get; set; }
+    [Parameter] public Guid LeagueId { get; set; }
+    private LeagueDto? _league;
+    private List<LeagueParticipantDto> _participants = new();
+    private List<LeagueMatchDto> _leagueMatches = new();
+    private int _tab;
+    private bool _loading = true;
+    private bool _joining;
+    private string? _errorMessage;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            _league = await LeagueService.GetLeagueAsync(ClubId, LeagueId);
+            _participants = await LeagueService.GetParticipantsAsync(ClubId, LeagueId);
+            _leagueMatches = await LeagueService.GetLeagueMatchesAsync(ClubId, LeagueId);
+        }
+        catch { _errorMessage = "Greška pri učitavanju lige."; }
+        finally { _loading = false; }
+    }
+
+    private void SetTab(int tab) => _tab = tab;
+
+    private async Task Join()
+    {
+        _joining = true;
+        try { await LeagueService.JoinLeagueAsync(ClubId, LeagueId); }
+        catch { _errorMessage = "Greška pri pridruživanju."; }
+        finally { _joining = false; }
+    }
+}
