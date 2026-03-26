@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:TennisManager.Mobile.ViewModels.Profile"
+             x:Class="TennisManager.Mobile.Views.Profile.ProfilePage"
+             x:DataType="vm:ProfileViewModel"
+             Title="Profil">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="16" Spacing="16">
+
+            <ActivityIndicator IsRunning="{Binding IsLoading}" IsVisible="{Binding IsLoading}"
+                               HorizontalOptions="Center" />
+
+            <Label Text="{Binding ErrorMessage}" TextColor="Red"
+                   IsVisible="{Binding ErrorMessage, Converter={StaticResource StringNotEmptyConverter}}" />
+
+            <Label Text="{Binding SuccessMessage}" TextColor="Green"
+                   IsVisible="{Binding SuccessMessage, Converter={StaticResource StringNotEmptyConverter}}" />
+
+            <!-- Avatar + name header -->
+            <VerticalStackLayout HorizontalOptions="Center" Spacing="8">
+                <Frame WidthRequest="80" HeightRequest="80" CornerRadius="40"
+                       BackgroundColor="{StaticResource Primary}" HorizontalOptions="Center"
+                       BorderColor="Transparent" Padding="0">
+                    <Label Text="{Binding Profile.FullName, Converter={StaticResource InitialsConverter}}"
+                           TextColor="White" FontSize="28" FontAttributes="Bold"
+                           HorizontalOptions="Center" VerticalOptions="Center" />
+                </Frame>
+                <Label Text="{Binding Profile.FullName}" FontSize="22" FontAttributes="Bold"
+                       HorizontalOptions="Center" />
+                <Label Text="{Binding Profile.Email}" TextColor="{StaticResource Secondary}"
+                       HorizontalOptions="Center" />
+            </VerticalStackLayout>
+
+            <!-- View mode -->
+            <Border Padding="16" StrokeShape="RoundRectangle 8"
+                    IsVisible="{Binding IsEditing, Converter={StaticResource InvertBoolConverter}}">
+                <VerticalStackLayout Spacing="12">
+                    <Grid ColumnDefinitions="*,Auto">
+                        <Label Grid.Column="0" Text="Ime" TextColor="{StaticResource Secondary}" VerticalOptions="Center" />
+                        <Label Grid.Column="1" Text="{Binding Profile.FirstName}" FontAttributes="Bold" />
+                    </Grid>
+                    <Grid ColumnDefinitions="*,Auto">
+                        <Label Grid.Column="0" Text="Prezime" TextColor="{StaticResource Secondary}" VerticalOptions="Center" />
+                        <Label Grid.Column="1" Text="{Binding Profile.LastName}" FontAttributes="Bold" />
+                    </Grid>
+                    <Grid ColumnDefinitions="*,Auto">
+                        <Label Grid.Column="0" Text="Telefon" TextColor="{StaticResource Secondary}" VerticalOptions="Center" />
+                        <Label Grid.Column="1" Text="{Binding Profile.Phone}" FontAttributes="Bold" />
+                    </Grid>
+                </VerticalStackLayout>
+            </Border>
+
+            <!-- Edit mode -->
+            <Border Padding="16" StrokeShape="RoundRectangle 8"
+                    IsVisible="{Binding IsEditing}">
+                <VerticalStackLayout Spacing="12">
+                    <Label Text="Ime" FontAttributes="Bold" />
+                    <Entry Text="{Binding FirstName}" Placeholder="Unesite ime" />
+                    <Label Text="Prezime" FontAttributes="Bold" />
+                    <Entry Text="{Binding LastName}" Placeholder="Unesite prezime" />
+                    <Label Text="Telefon (opcionalno)" FontAttributes="Bold" />
+                    <Entry Text="{Binding Phone}" Placeholder="+385..." Keyboard="Telephone" />
+                </VerticalStackLayout>
+            </Border>
+
+            <Button Text="{Binding IsEditing, Converter={StaticResource BoolToEditButtonTextConverter}}"
+                    Command="{Binding ToggleEditCommand}"
+                    IsVisible="{Binding IsEditing, Converter={StaticResource InvertBoolConverter}}"
+                    BackgroundColor="{StaticResource Secondary}"
+                    TextColor="White"
+                    CornerRadius="8"
+                    HeightRequest="50" />
+
+            <Button Text="Spremi promjene"
+                    Command="{Binding SaveProfileCommand}"
+                    IsVisible="{Binding IsEditing}"
+                    IsEnabled="{Binding IsLoading, Converter={StaticResource InvertBoolConverter}}"
+                    BackgroundColor="{StaticResource Primary}"
+                    TextColor="White"
+                    CornerRadius="8"
+                    HeightRequest="50" />
+
+            <Button Text="Odustani"
+                    Command="{Binding ToggleEditCommand}"
+                    IsVisible="{Binding IsEditing}"
+                    BackgroundColor="LightGray"
+                    TextColor="Black"
+                    CornerRadius="8"
+                    HeightRequest="50" />
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

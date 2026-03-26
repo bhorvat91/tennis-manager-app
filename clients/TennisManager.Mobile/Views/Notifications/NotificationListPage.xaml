@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:TennisManager.Mobile.ViewModels.Notifications"
+             xmlns:models="clr-namespace:TennisManager.Mobile.Models"
+             x:Class="TennisManager.Mobile.Views.Notifications.NotificationListPage"
+             x:DataType="vm:NotificationListViewModel"
+             Title="Notifikacije">
+
+    <Grid RowDefinitions="Auto,Auto,*">
+
+        <!-- Header with unread count and mark all button -->
+        <Grid Grid.Row="0" ColumnDefinitions="*,Auto" Padding="16,8">
+            <Label Grid.Column="0"
+                   Text="{Binding UnreadCount, StringFormat='{0} nepročitanih'}"
+                   FontAttributes="Bold" VerticalOptions="Center" />
+            <Button Grid.Column="1" Text="Označi sve pročitano"
+                    Command="{Binding MarkAllAsReadCommand}"
+                    BackgroundColor="{StaticResource Primary}"
+                    TextColor="White"
+                    CornerRadius="6"
+                    Padding="10,6"
+                    FontSize="12" />
+        </Grid>
+
+        <Label Grid.Row="1" Text="{Binding ErrorMessage}" TextColor="Red"
+               IsVisible="{Binding ErrorMessage, Converter={StaticResource StringNotEmptyConverter}}"
+               Padding="16,4" />
+
+        <ActivityIndicator Grid.Row="1" IsRunning="{Binding IsLoading}"
+                           IsVisible="{Binding IsLoading}" HorizontalOptions="Center" />
+
+        <CollectionView Grid.Row="2"
+                        ItemsSource="{Binding Notifications}"
+                        EmptyView="Nema notifikacija."
+                        SelectionMode="None">
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="models:NotificationDto">
+                    <Border Margin="16,4" Padding="12" StrokeShape="RoundRectangle 8"
+                            BackgroundColor="{Binding IsRead, Converter={StaticResource BoolToReadColorConverter}}">
+                        <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto,Auto">
+                            <Label Grid.Row="0" Grid.Column="0"
+                                   Text="{Binding Title}"
+                                   FontAttributes="{Binding IsRead, Converter={StaticResource BoolToFontAttributesConverter}}"
+                                   FontSize="15" />
+                            <Label Grid.Row="0" Grid.Column="1"
+                                   Text="{Binding CreatedAt, StringFormat='{0:dd.MM}'}"
+                                   FontSize="11" TextColor="{StaticResource Secondary}" VerticalOptions="Start" />
+                            <Label Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
+                                   Text="{Binding Message}"
+                                   FontSize="13" TextColor="{StaticResource Secondary}"
+                                   MaxLines="2" LineBreakMode="TailTruncation" />
+
+                            <HorizontalStackLayout Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2"
+                                                   Spacing="8" Margin="0,6,0,0">
+                                <Button Text="Pročitano"
+                                        IsVisible="{Binding IsRead, Converter={StaticResource InvertBoolConverter}}"
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type vm:NotificationListViewModel}}, Path=MarkAsReadCommand}"
+                                        CommandParameter="{Binding .}"
+                                        BackgroundColor="{StaticResource Primary}"
+                                        TextColor="White"
+                                        CornerRadius="6"
+                                        Padding="10,4"
+                                        FontSize="12" />
+                                <Button Text="Obriši"
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type vm:NotificationListViewModel}}, Path=DeleteNotificationCommand}"
+                                        CommandParameter="{Binding .}"
+                                        BackgroundColor="LightGray"
+                                        TextColor="Black"
+                                        CornerRadius="6"
+                                        Padding="10,4"
+                                        FontSize="12" />
+                            </HorizontalStackLayout>
+                        </Grid>
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+    </Grid>
+</ContentPage>

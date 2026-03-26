@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Shell xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+       xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+       xmlns:auth="clr-namespace:TennisManager.Mobile.Views.Auth"
+       xmlns:clubs="clr-namespace:TennisManager.Mobile.Views.Clubs"
+       xmlns:reservations="clr-namespace:TennisManager.Mobile.Views.Reservations"
+       xmlns:matches="clr-namespace:TennisManager.Mobile.Views.Matches"
+       xmlns:notifications="clr-namespace:TennisManager.Mobile.Views.Notifications"
+       xmlns:profile="clr-namespace:TennisManager.Mobile.Views.Profile"
+       x:Class="TennisManager.Mobile.AppShell"
+       FlyoutBehavior="Flyout"
+       FlyoutHeaderBehavior="Fixed">
+
+    <Shell.FlyoutHeader>
+        <Grid HeightRequest="160" BackgroundColor="{StaticResource Primary}">
+            <VerticalStackLayout VerticalOptions="Center" HorizontalOptions="Center" Spacing="4">
+                <Label Text="🎾" FontSize="48" HorizontalOptions="Center" />
+                <Label Text="Tennis Manager" FontSize="20" FontAttributes="Bold"
+                       TextColor="White" HorizontalOptions="Center" />
+            </VerticalStackLayout>
+        </Grid>
+    </Shell.FlyoutHeader>
+
+    <!-- Auth pages (not in flyout) -->
+    <ShellContent x:Name="LoginShellContent"
+                  ContentTemplate="{DataTemplate auth:LoginPage}"
+                  Route="LoginPage"
+                  FlyoutItemIsVisible="False" />
+
+    <ShellContent x:Name="RegisterShellContent"
+                  ContentTemplate="{DataTemplate auth:RegisterPage}"
+                  Route="RegisterPage"
+                  FlyoutItemIsVisible="False" />
+
+    <!-- Main navigation -->
+    <FlyoutItem Title="Moji klubovi" Icon="club.png" Route="MyClubs">
+        <ShellContent ContentTemplate="{DataTemplate clubs:MyClubsPage}" Route="MyClubsPage" />
+    </FlyoutItem>
+
+    <FlyoutItem Title="Moje rezervacije" Icon="reservation.png" Route="MyReservations">
+        <ShellContent ContentTemplate="{DataTemplate reservations:MyReservationsPage}" Route="MyReservationsPage" />
+    </FlyoutItem>
+
+    <FlyoutItem Title="Moji mečevi" Icon="match.png" Route="MyMatches">
+        <ShellContent ContentTemplate="{DataTemplate matches:MyMatchesPage}" Route="MyMatchesPage" />
+    </FlyoutItem>
+
+    <FlyoutItem Title="Notifikacije" Icon="notification.png" Route="Notifications">
+        <ShellContent ContentTemplate="{DataTemplate notifications:NotificationListPage}" Route="NotificationListPage" />
+    </FlyoutItem>
+
+    <FlyoutItem Title="Profil" Icon="profile.png" Route="Profile">
+        <ShellContent ContentTemplate="{DataTemplate profile:ProfilePage}" Route="ProfilePage" />
+    </FlyoutItem>
+
+    <MenuItem Text="Odjava" IconImageSource="logout.png" Clicked="OnLogoutClicked" />
+
+</Shell>

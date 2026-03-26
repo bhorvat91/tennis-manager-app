@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:TennisManager.Mobile.ViewModels.Reservations"
+             xmlns:models="clr-namespace:TennisManager.Mobile.Models"
+             x:Class="TennisManager.Mobile.Views.Reservations.CourtAvailabilityPage"
+             x:DataType="vm:CourtAvailabilityViewModel"
+             Title="{Binding Court.Name}">
+
+    <Grid RowDefinitions="Auto,Auto,*">
+
+        <!-- Date picker -->
+        <Border Grid.Row="0" Padding="16" Margin="16,8" StrokeShape="RoundRectangle 8">
+            <Grid ColumnDefinitions="*,Auto">
+                <Label Grid.Column="0" Text="Odaberi datum:" VerticalOptions="Center" FontAttributes="Bold" />
+                <DatePicker Grid.Column="1" Date="{Binding SelectedDate}" />
+            </Grid>
+        </Border>
+
+        <Label Grid.Row="1" Text="{Binding ErrorMessage}" TextColor="Red"
+               IsVisible="{Binding ErrorMessage, Converter={StaticResource StringNotEmptyConverter}}"
+               Padding="16,4" />
+
+        <ActivityIndicator Grid.Row="1" IsRunning="{Binding IsLoading}"
+                           IsVisible="{Binding IsLoading}" HorizontalOptions="Center" />
+
+        <CollectionView Grid.Row="2"
+                        ItemsSource="{Binding Slots}"
+                        EmptyView="Nema dostupnih termina za odabrani datum."
+                        SelectionMode="None">
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="models:AvailabilitySlot">
+                    <Border Margin="16,4" Padding="12" StrokeShape="RoundRectangle 8"
+                            BackgroundColor="{Binding IsAvailable, Converter={StaticResource BoolToColorConverter}}">
+                        <Grid ColumnDefinitions="*,Auto">
+                            <Label Grid.Column="0" Text="{Binding TimeLabel}"
+                                   FontSize="16" FontAttributes="Bold" VerticalOptions="Center" />
+                            <Button Grid.Column="1"
+                                    Text="Rezerviraj"
+                                    IsVisible="{Binding IsAvailable}"
+                                    Command="{Binding Source={RelativeSource AncestorType={x:Type vm:CourtAvailabilityViewModel}}, Path=BookSlotCommand}"
+                                    CommandParameter="{Binding .}"
+                                    BackgroundColor="{StaticResource Primary}"
+                                    TextColor="White"
+                                    CornerRadius="6"
+                                    Padding="12,6" />
+                            <Label Grid.Column="1"
+                                   Text="Zauzeto"
+                                   IsVisible="{Binding IsAvailable, Converter={StaticResource InvertBoolConverter}}"
+                                   TextColor="Red"
+                                   VerticalOptions="Center" />
+                        </Grid>
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+    </Grid>
+</ContentPage>

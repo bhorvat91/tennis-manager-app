@@ -12,5 +12,6 @@
   </Folder>
   <Folder Name="/clients/">
     <Project Path="../clients/TennisManager.Web/TennisManager.Web.csproj" />
+    <Project Path="../clients/TennisManager.Mobile/TennisManager.Mobile.csproj" />
   </Folder>
 </Solution>

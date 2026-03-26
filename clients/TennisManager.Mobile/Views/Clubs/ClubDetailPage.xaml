@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:TennisManager.Mobile.ViewModels.Clubs"
+             x:Class="TennisManager.Mobile.Views.Clubs.ClubDetailPage"
+             x:DataType="vm:ClubDetailViewModel"
+             Title="{Binding Club.Name}">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="16" Spacing="16">
+
+            <ActivityIndicator IsRunning="{Binding IsLoading}" IsVisible="{Binding IsLoading}"
+                               HorizontalOptions="Center" />
+
+            <Label Text="{Binding ErrorMessage}" TextColor="Red"
+                   IsVisible="{Binding ErrorMessage, Converter={StaticResource StringNotEmptyConverter}}" />
+
+            <Label Text="{Binding SuccessMessage}" TextColor="Green"
+                   IsVisible="{Binding SuccessMessage, Converter={StaticResource StringNotEmptyConverter}}" />
+
+            <Border Padding="16" StrokeShape="RoundRectangle 8">
+                <VerticalStackLayout Spacing="8">
+                    <Label Text="{Binding Club.Name}" FontSize="24" FontAttributes="Bold" />
+                    <Label Text="{Binding Club.City}" TextColor="{StaticResource Secondary}" />
+                    <Label Text="{Binding Club.Address}" TextColor="{StaticResource Secondary}" />
+                    <Label Text="{Binding Club.Description}" />
+                    <Label Text="{Binding Club.MemberCount, StringFormat='{0} aktivnih članova'}"
+                           TextColor="{StaticResource Primary}" />
+                </VerticalStackLayout>
+            </Border>
+
+            <Button Text="Vidi terene"
+                    Command="{Binding ViewCourtsCommand}"
+                    BackgroundColor="{StaticResource Secondary}"
+                    TextColor="White"
+                    CornerRadius="8" />
+
+            <Button Text="Zatraži članstvo"
+                    Command="{Binding RequestMembershipCommand}"
+                    IsEnabled="{Binding IsLoading, Converter={StaticResource InvertBoolConverter}}"
+                    BackgroundColor="{StaticResource Primary}"
+                    TextColor="White"
+                    CornerRadius="8" />
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

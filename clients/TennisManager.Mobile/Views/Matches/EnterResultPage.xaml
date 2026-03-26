@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:TennisManager.Mobile.ViewModels.Matches"
+             xmlns:models="clr-namespace:TennisManager.Mobile.Models"
+             x:Class="TennisManager.Mobile.Views.Matches.EnterResultPage"
+             x:DataType="vm:EnterResultViewModel"
+             Title="Unos rezultata">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="16" Spacing="16">
+
+            <Border Padding="16" StrokeShape="RoundRectangle 8">
+                <VerticalStackLayout Spacing="8">
+                    <Label Text="Tim 1" FontAttributes="Bold" FontSize="16" />
+                    <Label Text="{Binding Match.Team1Display}" />
+                    <BoxView HeightRequest="1" Color="{StaticResource Secondary}" />
+                    <Label Text="Tim 2" FontAttributes="Bold" FontSize="16" />
+                    <Label Text="{Binding Match.Team2Display}" />
+                </VerticalStackLayout>
+            </Border>
+
+            <Label Text="Setovi" FontSize="18" FontAttributes="Bold" />
+
+            <CollectionView ItemsSource="{Binding Sets}" SelectionMode="None">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="models:MatchSetDto">
+                        <Border Margin="0,4" Padding="12" StrokeShape="RoundRectangle 8">
+                            <Grid ColumnDefinitions="Auto,*,Auto,*" ColumnSpacing="12">
+                                <Label Grid.Column="0"
+                                       Text="{Binding SetNumber, StringFormat='Set {0}:'}"
+                                       VerticalOptions="Center" FontAttributes="Bold" />
+                                <Entry Grid.Column="1" Text="{Binding Team1Games}"
+                                       Keyboard="Numeric" Placeholder="Tim 1" HorizontalOptions="Fill" />
+                                <Label Grid.Column="2" Text=":" VerticalOptions="Center" FontSize="20" FontAttributes="Bold" />
+                                <Entry Grid.Column="3" Text="{Binding Team2Games}"
+                                       Keyboard="Numeric" Placeholder="Tim 2" HorizontalOptions="Fill" />
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+            <HorizontalStackLayout Spacing="12">
+                <Button Text="+ Dodaj set"
+                        Command="{Binding AddSetCommand}"
+                        BackgroundColor="{StaticResource Secondary}"
+                        TextColor="White"
+                        CornerRadius="6"
+                        HorizontalOptions="FillAndExpand" />
+                <Button Text="- Ukloni set"
+                        Command="{Binding RemoveLastSetCommand}"
+                        BackgroundColor="LightGray"
+                        TextColor="Black"
+                        CornerRadius="6"
+                        HorizontalOptions="FillAndExpand" />
+            </HorizontalStackLayout>
+
+            <Label Text="{Binding ErrorMessage}" TextColor="Red"
+                   IsVisible="{Binding ErrorMessage, Converter={StaticResource StringNotEmptyConverter}}" />
+
+            <ActivityIndicator IsRunning="{Binding IsLoading}" IsVisible="{Binding IsLoading}"
+                               HorizontalOptions="Center" />
+
+            <Button Text="Potvrdi rezultat"
+                    Command="{Binding SubmitResultCommand}"
+                    IsEnabled="{Binding IsLoading, Converter={StaticResource InvertBoolConverter}}"
+                    BackgroundColor="{StaticResource Primary}"
+                    TextColor="White"
+                    CornerRadius="8"
+                    HeightRequest="50" />
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>
