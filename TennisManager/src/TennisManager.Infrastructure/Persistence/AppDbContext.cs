@@ -18,6 +18,9 @@ public class AppDbContext : DbContext
     public DbSet<MatchPlayer> MatchPlayers => Set<MatchPlayer>();
     public DbSet<MatchResult> MatchResults => Set<MatchResult>();
     public DbSet<MatchSet> MatchSets => Set<MatchSet>();
+    public DbSet<League> Leagues => Set<League>();
+    public DbSet<LeagueParticipant> LeagueParticipants => Set<LeagueParticipant>();
+    public DbSet<LeagueMatch> LeagueMatches => Set<LeagueMatch>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
