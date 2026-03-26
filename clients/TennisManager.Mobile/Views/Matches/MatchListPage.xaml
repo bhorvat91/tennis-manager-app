@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:TennisManager.Mobile.ViewModels.Matches"
+             xmlns:models="clr-namespace:TennisManager.Mobile.Models"
+             x:Class="TennisManager.Mobile.Views.Matches.MatchListPage"
+             x:DataType="vm:MatchListViewModel"
+             Title="Mečevi">
+
+    <Grid RowDefinitions="Auto,*,Auto">
+
+        <Label Grid.Row="0" Text="{Binding ErrorMessage}" TextColor="Red"
+               IsVisible="{Binding ErrorMessage, Converter={StaticResource StringNotEmptyConverter}}"
+               Padding="16,8" />
+
+        <ActivityIndicator Grid.Row="0" IsRunning="{Binding IsLoading}"
+                           IsVisible="{Binding IsLoading}" HorizontalOptions="Center" />
+
+        <CollectionView Grid.Row="1"
+                        ItemsSource="{Binding Matches}"
+                        EmptyView="Nema mečeva."
+                        SelectionMode="None">
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="models:MatchDto">
+                    <Border Margin="16,8" Padding="12" StrokeShape="RoundRectangle 8">
+                        <Grid RowDefinitions="Auto,Auto,Auto" ColumnDefinitions="*,Auto">
+                            <Label Grid.Row="0" Grid.Column="0"
+                                   Text="{Binding Type, StringFormat='Tip: {0}'}"
+                                   FontAttributes="Bold" />
+                            <Label Grid.Row="0" Grid.Column="1" Text="{Binding Status}"
+                                   TextColor="{StaticResource Primary}" FontSize="12" VerticalOptions="Center" />
+                            <Label Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
+                                   Text="{Binding ScheduledAt, StringFormat='{0:dd.MM.yyyy HH:mm}'}"
+                                   TextColor="{StaticResource Secondary}" />
+                            <Label Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2"
+                                   Text="{Binding Team1Display, StringFormat='Tim 1: {0}'}"
+                                   FontSize="13" />
+
+                            <Grid.GestureRecognizers>
+                                <TapGestureRecognizer
+                                    Command="{Binding Source={RelativeSource AncestorType={x:Type vm:MatchListViewModel}}, Path=NavigateToMatchCommand}"
+                                    CommandParameter="{Binding .}" />
+                            </Grid.GestureRecognizers>
+                        </Grid>
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+        <Button Grid.Row="2" Text="+ Novi meč"
+                Command="{Binding CreateMatchCommand}"
+                Margin="16" CornerRadius="8"
+                BackgroundColor="{StaticResource Primary}" TextColor="White" />
+
+    </Grid>
+</ContentPage>

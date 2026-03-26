@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:TennisManager.Mobile.ViewModels.Matches"
+             xmlns:models="clr-namespace:TennisManager.Mobile.Models"
+             x:Class="TennisManager.Mobile.Views.Matches.MatchDetailPage"
+             x:DataType="vm:MatchDetailViewModel"
+             Title="Detalji meča">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="16" Spacing="16">
+
+            <ActivityIndicator IsRunning="{Binding IsLoading}" IsVisible="{Binding IsLoading}"
+                               HorizontalOptions="Center" />
+
+            <Label Text="{Binding ErrorMessage}" TextColor="Red"
+                   IsVisible="{Binding ErrorMessage, Converter={StaticResource StringNotEmptyConverter}}" />
+
+            <Border Padding="16" StrokeShape="RoundRectangle 8">
+                <VerticalStackLayout Spacing="12">
+                    <Grid ColumnDefinitions="*,Auto">
+                        <Label Grid.Column="0" Text="Tip" TextColor="{StaticResource Secondary}" VerticalOptions="Center" />
+                        <Label Grid.Column="1" Text="{Binding Match.Type}" FontAttributes="Bold" />
+                    </Grid>
+                    <Grid ColumnDefinitions="*,Auto">
+                        <Label Grid.Column="0" Text="Status" TextColor="{StaticResource Secondary}" VerticalOptions="Center" />
+                        <Label Grid.Column="1" Text="{Binding Match.Status}" TextColor="{StaticResource Primary}" />
+                    </Grid>
+                    <Grid ColumnDefinitions="*,Auto">
+                        <Label Grid.Column="0" Text="Datum" TextColor="{StaticResource Secondary}" VerticalOptions="Center" />
+                        <Label Grid.Column="1" Text="{Binding Match.ScheduledAt, StringFormat='{0:dd.MM.yyyy HH:mm}'}" />
+                    </Grid>
+                </VerticalStackLayout>
+            </Border>
+
+            <Border Padding="16" StrokeShape="RoundRectangle 8">
+                <VerticalStackLayout Spacing="8">
+                    <Label Text="Tim 1" FontAttributes="Bold" FontSize="16" />
+                    <Label Text="{Binding Match.Team1Display}" />
+                    <BoxView HeightRequest="1" Color="{StaticResource Secondary}" />
+                    <Label Text="Tim 2" FontAttributes="Bold" FontSize="16" />
+                    <Label Text="{Binding Match.Team2Display}" />
+                </VerticalStackLayout>
+            </Border>
+
+            <Border Padding="16" StrokeShape="RoundRectangle 8"
+                    IsVisible="{Binding Match.Result, Converter={StaticResource NotNullConverter}}">
+                <VerticalStackLayout Spacing="8">
+                    <Label Text="Rezultat" FontAttributes="Bold" FontSize="16" />
+                    <Label Text="{Binding Match.Result.Score}" FontSize="20"
+                           HorizontalOptions="Center" TextColor="{StaticResource Primary}" />
+                </VerticalStackLayout>
+            </Border>
+
+            <Button Text="Unesi rezultat"
+                    Command="{Binding EnterResultCommand}"
+                    BackgroundColor="{StaticResource Primary}"
+                    TextColor="White"
+                    CornerRadius="8"
+                    HeightRequest="50" />
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:TennisManager.Mobile.ViewModels.Reservations"
+             xmlns:models="clr-namespace:TennisManager.Mobile.Models"
+             x:Class="TennisManager.Mobile.Views.Reservations.MyReservationsPage"
+             x:DataType="vm:MyReservationsViewModel"
+             Title="Moje rezervacije">
+
+    <Grid RowDefinitions="Auto,*">
+
+        <Label Grid.Row="0" Text="{Binding ErrorMessage}" TextColor="Red"
+               IsVisible="{Binding ErrorMessage, Converter={StaticResource StringNotEmptyConverter}}"
+               Padding="16,8" />
+
+        <ActivityIndicator Grid.Row="0" IsRunning="{Binding IsLoading}"
+                           IsVisible="{Binding IsLoading}" HorizontalOptions="Center" />
+
+        <ScrollView Grid.Row="1">
+            <VerticalStackLayout Spacing="8">
+
+                <Label Text="Nadolazeće rezervacije" FontSize="18" FontAttributes="Bold"
+                       Padding="16,12,16,4" />
+
+                <CollectionView ItemsSource="{Binding UpcomingReservations}"
+                                EmptyView="Nema nadolazećih rezervacija."
+                                SelectionMode="None">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="models:ReservationDto">
+                            <Border Margin="16,4" Padding="12" StrokeShape="RoundRectangle 8">
+                                <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto,Auto">
+                                    <Label Grid.Row="0" Grid.Column="0" Text="{Binding CourtName}"
+                                           FontSize="16" FontAttributes="Bold" />
+                                    <Label Grid.Row="0" Grid.Column="1" Text="{Binding Status}"
+                                           TextColor="{StaticResource Primary}" FontSize="12" VerticalOptions="Center" />
+                                    <Label Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
+                                           Text="{Binding StartTime, StringFormat='{0:dd.MM.yyyy HH:mm}'}"
+                                           TextColor="{StaticResource Secondary}" />
+                                    <Label Grid.Row="2" Grid.Column="0"
+                                           Text="{Binding Type, StringFormat='Vrsta: {0}'}"
+                                           TextColor="{StaticResource Secondary}" FontSize="13" />
+                                    <Button Grid.Row="2" Grid.Column="1"
+                                            Text="Otkaži"
+                                            Command="{Binding Source={RelativeSource AncestorType={x:Type vm:MyReservationsViewModel}}, Path=CancelReservationCommand}"
+                                            CommandParameter="{Binding .}"
+                                            BackgroundColor="Red"
+                                            TextColor="White"
+                                            CornerRadius="6"
+                                            Padding="8,4"
+                                            FontSize="12" />
+
+                                    <Grid.GestureRecognizers>
+                                        <TapGestureRecognizer
+                                            Command="{Binding Source={RelativeSource AncestorType={x:Type vm:MyReservationsViewModel}}, Path=NavigateToDetailCommand}"
+                                            CommandParameter="{Binding .}" />
+                                    </Grid.GestureRecognizers>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+
+                <Label Text="Prošle rezervacije" FontSize="18" FontAttributes="Bold"
+                       Padding="16,12,16,4" />
+
+                <CollectionView ItemsSource="{Binding PastReservations}"
+                                EmptyView="Nema prošlih rezervacija."
+                                SelectionMode="None">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="models:ReservationDto">
+                            <Border Margin="16,4" Padding="12" StrokeShape="RoundRectangle 8"
+                                    BackgroundColor="#F5F5F5">
+                                <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto">
+                                    <Label Grid.Row="0" Grid.Column="0" Text="{Binding CourtName}"
+                                           FontSize="16" FontAttributes="Bold" />
+                                    <Label Grid.Row="0" Grid.Column="1" Text="{Binding Status}"
+                                           TextColor="{StaticResource Secondary}" FontSize="12" VerticalOptions="Center" />
+                                    <Label Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
+                                           Text="{Binding StartTime, StringFormat='{0:dd.MM.yyyy HH:mm}'}"
+                                           TextColor="{StaticResource Secondary}" />
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+
+            </VerticalStackLayout>
+        </ScrollView>
+
+    </Grid>
+</ContentPage>

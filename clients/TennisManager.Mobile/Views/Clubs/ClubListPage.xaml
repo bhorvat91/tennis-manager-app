@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:TennisManager.Mobile.ViewModels.Clubs"
+             xmlns:models="clr-namespace:TennisManager.Mobile.Models"
+             x:Class="TennisManager.Mobile.Views.Clubs.ClubListPage"
+             x:DataType="vm:ClubListViewModel"
+             Title="Svi klubovi">
+
+    <Grid RowDefinitions="Auto,*">
+
+        <Label Grid.Row="0" Text="{Binding ErrorMessage}" TextColor="Red"
+               IsVisible="{Binding ErrorMessage, Converter={StaticResource StringNotEmptyConverter}}"
+               Padding="16,8" />
+
+        <ActivityIndicator Grid.Row="0" IsRunning="{Binding IsLoading}"
+                           IsVisible="{Binding IsLoading}" HorizontalOptions="Center" />
+
+        <CollectionView Grid.Row="1"
+                        ItemsSource="{Binding Clubs}"
+                        EmptyView="Nema dostupnih klubova."
+                        SelectionMode="None">
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="models:ClubDto">
+                    <Border Margin="16,8" Padding="16" StrokeShape="RoundRectangle 8">
+                        <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto,Auto">
+                            <Label Grid.Row="0" Grid.Column="0" Text="{Binding Name}"
+                                   FontSize="18" FontAttributes="Bold" />
+                            <Label Grid.Row="0" Grid.Column="1" Text="{Binding MemberCount, StringFormat='{0} članova'}"
+                                   FontSize="12" TextColor="{StaticResource Secondary}" VerticalOptions="Center" />
+                            <Label Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
+                                   Text="{Binding City}" TextColor="{StaticResource Secondary}" />
+                            <Label Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2"
+                                   Text="{Binding Description}" FontSize="13" MaxLines="2" LineBreakMode="TailTruncation" />
+
+                            <Grid.GestureRecognizers>
+                                <TapGestureRecognizer
+                                    Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ClubListViewModel}}, Path=NavigateToClubCommand}"
+                                    CommandParameter="{Binding .}" />
+                            </Grid.GestureRecognizers>
+                        </Grid>
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+    </Grid>
+</ContentPage>

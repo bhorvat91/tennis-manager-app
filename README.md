@@ -133,43 +133,43 @@ Za detaljan pregled strukture projekta i Clean Architecture pristupa, pogledaj [
 
 | Status | Feature | Datum završetka | Napomene |
 |--------|---------|-----------------|----------|
-| ⬜ | Migracije: leagues, league_participants, league_matches | - | - |
-| ⬜ | CRUD endpointi za lige | - | - |
-| ⬜ | Prijava/odjava sudionika | - | - |
-| ⬜ | Liga-mečevi i obvezni rezultati | - | - |
-| ⬜ | Osnovna ljestvica | - | - |
+| ✅ | Migracije: leagues, league_participants, league_matches | 2026-03-26 | PR #8 |
+| ✅ | CRUD endpointi za lige | 2026-03-26 | PR #8 |
+| ✅ | Prijava/odjava sudionika | 2026-03-26 | PR #8 |
+| ✅ | Liga-mečevi i obvezni rezultati | 2026-03-26 | PR #8 |
+| ✅ | Osnovna ljestvica | 2026-03-26 | PR #8 |
 
 ### Faza 5 – Notifikacije
 
 | Status | Feature | Datum završetka | Napomene |
 |--------|---------|-----------------|----------|
-| ⬜ | Email servis integracija | - | - |
-| ⬜ | Push notifikacije | - | - |
-| ⬜ | Potvrda rezervacije | - | - |
-| ⬜ | Podsjetnik prije termina | - | - |
-| ⬜ | Notifikacija za članstvo | - | - |
+| ✅ | Email servis integracija | 2026-03-26 | PR #9 |
+| ✅ | Push notifikacije | 2026-03-26 | PR #9 |
+| ✅ | Potvrda rezervacije | 2026-03-26 | PR #9 |
+| ✅ | Podsjetnik prije termina | 2026-03-26 | PR #9 |
+| ✅ | Notifikacija za članstvo | 2026-03-26 | PR #9 |
 
 ### Faza 6 – Web frontend (Blazor WebAssembly)
 
 | Status | Feature | Datum završetka | Napomene |
 |--------|---------|-----------------|----------|
-| ⬜ | Blazor WASM projekt setup | - | - |
-| ⬜ | Autentikacija (login, registracija) | - | - |
-| ⬜ | Dashboard igrača | - | - |
-| ⬜ | Dashboard admina | - | - |
-| ⬜ | Kalendar rezervacija | - | - |
-| ⬜ | Pregled mečeva i rezultata | - | - |
-| ⬜ | Pregled liga | - | - |
+| ✅ | Blazor WASM projekt setup | 2026-03-26 | PR #10 |
+| ✅ | Autentikacija (login, registracija) | 2026-03-26 | PR #10 |
+| ✅ | Dashboard igrača | 2026-03-26 | PR #10 |
+| ✅ | Dashboard admina | 2026-03-26 | PR #10 |
+| ✅ | Kalendar rezervacija | 2026-03-26 | PR #10 |
+| ✅ | Pregled mečeva i rezultata | 2026-03-26 | PR #10 |
+| ✅ | Pregled liga | 2026-03-26 | PR #10 |
 
 ### Faza 7 – Mobilne aplikacije (.NET MAUI)
 
 | Status | Feature | Datum završetka | Napomene |
 |--------|---------|-----------------|----------|
-| ⬜ | MAUI projekt setup | - | - |
-| ⬜ | Autentikacija | - | - |
-| ⬜ | Pregled i rezervacija terena | - | - |
-| ⬜ | Mečevi i rezultati | - | - |
-| ⬜ | Push notifikacije | - | - |
+| ✅ | MAUI projekt setup | 2026-03-26 | PR #11 |
+| ✅ | Autentikacija | 2026-03-26 | PR #11 |
+| ✅ | Pregled i rezervacija terena | 2026-03-26 | PR #11 |
+| ✅ | Mečevi i rezultati | 2026-03-26 | PR #11 |
+| ✅ | Push notifikacije (placeholder) | 2026-03-26 | PR #11 |
 
 ---
 

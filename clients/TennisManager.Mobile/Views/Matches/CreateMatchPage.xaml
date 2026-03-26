@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:TennisManager.Mobile.ViewModels.Matches"
+             x:Class="TennisManager.Mobile.Views.Matches.CreateMatchPage"
+             x:DataType="vm:CreateMatchViewModel"
+             Title="Novi meč">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="16" Spacing="16">
+
+            <Label Text="Tip meča" FontAttributes="Bold" />
+            <Picker Title="Odaberi tip" ItemsSource="{Binding MatchTypes}" SelectedItem="{Binding Type}" />
+
+            <Label Text="Datum i vrijeme" FontAttributes="Bold" />
+            <DatePicker Date="{Binding ScheduledAt}" />
+            <TimePicker Time="{Binding ScheduledAt.TimeOfDay, Mode=OneWay}" />
+
+            <Label Text="{Binding ErrorMessage}" TextColor="Red"
+                   IsVisible="{Binding ErrorMessage, Converter={StaticResource StringNotEmptyConverter}}" />
+
+            <ActivityIndicator IsRunning="{Binding IsLoading}" IsVisible="{Binding IsLoading}"
+                               HorizontalOptions="Center" />
+
+            <Button Text="Kreiraj meč"
+                    Command="{Binding CreateMatchCommand}"
+                    IsEnabled="{Binding IsLoading, Converter={StaticResource InvertBoolConverter}}"
+                    BackgroundColor="{StaticResource Primary}"
+                    TextColor="White"
+                    CornerRadius="8"
+                    HeightRequest="50" />
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

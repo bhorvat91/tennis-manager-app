@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:TennisManager.Mobile.ViewModels.Reservations"
+             x:Class="TennisManager.Mobile.Views.Reservations.ReservationDetailPage"
+             x:DataType="vm:ReservationDetailViewModel"
+             Title="Detalji rezervacije">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="16" Spacing="16">
+
+            <ActivityIndicator IsRunning="{Binding IsLoading}" IsVisible="{Binding IsLoading}"
+                               HorizontalOptions="Center" />
+
+            <Label Text="{Binding ErrorMessage}" TextColor="Red"
+                   IsVisible="{Binding ErrorMessage, Converter={StaticResource StringNotEmptyConverter}}" />
+
+            <Border Padding="16" StrokeShape="RoundRectangle 8">
+                <VerticalStackLayout Spacing="12">
+                    <Grid ColumnDefinitions="*,Auto">
+                        <Label Grid.Column="0" Text="Teren" TextColor="{StaticResource Secondary}" VerticalOptions="Center" />
+                        <Label Grid.Column="1" Text="{Binding Reservation.CourtName}" FontAttributes="Bold" />
+                    </Grid>
+                    <Grid ColumnDefinitions="*,Auto">
+                        <Label Grid.Column="0" Text="Status" TextColor="{StaticResource Secondary}" VerticalOptions="Center" />
+                        <Label Grid.Column="1" Text="{Binding Reservation.Status}" FontAttributes="Bold"
+                               TextColor="{StaticResource Primary}" />
+                    </Grid>
+                    <Grid ColumnDefinitions="*,Auto">
+                        <Label Grid.Column="0" Text="Početak" TextColor="{StaticResource Secondary}" VerticalOptions="Center" />
+                        <Label Grid.Column="1" Text="{Binding Reservation.StartTime, StringFormat='{0:dd.MM.yyyy HH:mm}'}" />
+                    </Grid>
+                    <Grid ColumnDefinitions="*,Auto">
+                        <Label Grid.Column="0" Text="Kraj" TextColor="{StaticResource Secondary}" VerticalOptions="Center" />
+                        <Label Grid.Column="1" Text="{Binding Reservation.EndTime, StringFormat='{0:dd.MM.yyyy HH:mm}'}" />
+                    </Grid>
+                    <Grid ColumnDefinitions="*,Auto">
+                        <Label Grid.Column="0" Text="Vrsta" TextColor="{StaticResource Secondary}" VerticalOptions="Center" />
+                        <Label Grid.Column="1" Text="{Binding Reservation.Type}" />
+                    </Grid>
+                    <Label Text="{Binding Reservation.Notes, StringFormat='Napomena: {0}'}"
+                           IsVisible="{Binding Reservation.Notes, Converter={StaticResource StringNotEmptyConverter}}"
+                           TextColor="{StaticResource Secondary}" />
+                </VerticalStackLayout>
+            </Border>
+
+            <Button Text="Otkaži rezervaciju"
+                    Command="{Binding CancelReservationCommand}"
+                    IsEnabled="{Binding IsLoading, Converter={StaticResource InvertBoolConverter}}"
+                    BackgroundColor="Red"
+                    TextColor="White"
+                    CornerRadius="8"
+                    HeightRequest="50" />
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

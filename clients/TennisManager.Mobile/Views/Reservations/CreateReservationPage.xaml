@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:TennisManager.Mobile.ViewModels.Reservations"
+             x:Class="TennisManager.Mobile.Views.Reservations.CreateReservationPage"
+             x:DataType="vm:CreateReservationViewModel"
+             Title="Nova rezervacija">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="16" Spacing="16">
+
+            <Border Padding="16" StrokeShape="RoundRectangle 8">
+                <VerticalStackLayout Spacing="4">
+                    <Label Text="Teren" FontAttributes="Bold" TextColor="{StaticResource Secondary}" />
+                    <Label Text="{Binding Court.Name}" FontSize="18" FontAttributes="Bold" />
+                    <Label Text="{Binding Court.Surface, StringFormat='Podloga: {0}'}" TextColor="{StaticResource Secondary}" />
+                </VerticalStackLayout>
+            </Border>
+
+            <Border Padding="16" StrokeShape="RoundRectangle 8">
+                <VerticalStackLayout Spacing="8">
+                    <Label Text="Termin" FontAttributes="Bold" TextColor="{StaticResource Secondary}" />
+                    <Label Text="{Binding StartTime, StringFormat='Od: {0:dd.MM.yyyy HH:mm}'}" />
+                    <Label Text="{Binding EndTime, StringFormat='Do: {0:dd.MM.yyyy HH:mm}'}" />
+                </VerticalStackLayout>
+            </Border>
+
+            <Label Text="Vrsta rezervacije" FontAttributes="Bold" />
+            <Picker Title="Odaberi vrstu" ItemsSource="{Binding ReservationTypes}" SelectedItem="{Binding Type}" />
+
+            <Label Text="Napomena (opcionalno)" FontAttributes="Bold" />
+            <Editor Placeholder="Dodajte napomenu..." Text="{Binding Notes}" HeightRequest="100" />
+
+            <Label Text="{Binding ErrorMessage}" TextColor="Red"
+                   IsVisible="{Binding ErrorMessage, Converter={StaticResource StringNotEmptyConverter}}" />
+
+            <ActivityIndicator IsRunning="{Binding IsLoading}" IsVisible="{Binding IsLoading}"
+                               HorizontalOptions="Center" />
+
+            <Button Text="Kreiraj rezervaciju"
+                    Command="{Binding CreateReservationCommand}"
+                    IsEnabled="{Binding IsLoading, Converter={StaticResource InvertBoolConverter}}"
+                    BackgroundColor="{StaticResource Primary}"
+                    TextColor="White"
+                    CornerRadius="8"
+                    HeightRequest="50" />
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>
