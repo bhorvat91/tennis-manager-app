@@ -6,6 +6,7 @@ using TennisManager.Application.Common.Interfaces;
 using TennisManager.Domain.Entities;
 using TennisManager.Domain.Enums;
 using TennisManager.Domain.Interfaces.Repositories;
+using TennisManager.Domain.Interfaces.Services;
 
 namespace TennisManager.API.Controllers;
 
@@ -16,15 +17,18 @@ public class MembersController : ControllerBase
     private readonly IClubMemberRepository _memberRepository;
     private readonly IClubRepository _clubRepository;
     private readonly ICurrentUserService _currentUserService;
+    private readonly INotificationService _notificationService;
 
     public MembersController(
         IClubMemberRepository memberRepository,
         IClubRepository clubRepository,
-        ICurrentUserService currentUserService)
+        ICurrentUserService currentUserService,
+        INotificationService notificationService)
     {
         _memberRepository = memberRepository;
         _clubRepository = clubRepository;
         _currentUserService = currentUserService;
+        _notificationService = notificationService;
     }
 
     /// <summary>Get all members of a club. Admin or Coach only.</summary>
@@ -87,6 +91,10 @@ public class MembersController : ControllerBase
     [HttpPut("{userId:guid}/approve")]
     public async Task<IActionResult> ApproveMember(Guid clubId, Guid userId)
     {
+        var club = await _clubRepository.GetByIdAsync(clubId);
+        if (club is null)
+            return NotFound(new { message = $"Club {clubId} not found." });
+
         var member = await _memberRepository.GetByClubAndUserAsync(clubId, userId);
         if (member is null)
             return NotFound(new { message = "Membership request not found." });
@@ -94,6 +102,8 @@ public class MembersController : ControllerBase
         member.Status = MemberStatus.Approved;
         member.JoinedAt = DateTime.UtcNow;
         await _memberRepository.UpdateAsync(member);
+
+        await _notificationService.SendMembershipApprovedAsync(userId, clubId, club.Name);
 
         return Ok(MapToResponse(member));
     }
@@ -103,12 +113,18 @@ public class MembersController : ControllerBase
     [HttpPut("{userId:guid}/reject")]
     public async Task<IActionResult> RejectMember(Guid clubId, Guid userId)
     {
+        var club = await _clubRepository.GetByIdAsync(clubId);
+        if (club is null)
+            return NotFound(new { message = $"Club {clubId} not found." });
+
         var member = await _memberRepository.GetByClubAndUserAsync(clubId, userId);
         if (member is null)
             return NotFound(new { message = "Membership request not found." });
 
         member.Status = MemberStatus.Rejected;
         await _memberRepository.UpdateAsync(member);
+
+        await _notificationService.SendMembershipRejectedAsync(userId, clubId, club.Name);
 
         return Ok(MapToResponse(member));
     }

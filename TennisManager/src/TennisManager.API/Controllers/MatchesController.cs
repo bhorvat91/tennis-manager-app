@@ -6,6 +6,7 @@ using TennisManager.Application.Common.Interfaces;
 using TennisManager.Domain.Entities;
 using TennisManager.Domain.Enums;
 using TennisManager.Domain.Interfaces.Repositories;
+using TennisManager.Domain.Interfaces.Services;
 using MatchType = TennisManager.Domain.Enums.MatchType;
 
 namespace TennisManager.API.Controllers;
@@ -19,19 +20,22 @@ public class MatchesController : ControllerBase
     private readonly IClubMemberRepository _memberRepository;
     private readonly IReservationRepository _reservationRepository;
     private readonly ICurrentUserService _currentUserService;
+    private readonly INotificationService _notificationService;
 
     public MatchesController(
         IMatchRepository matchRepository,
         IClubRepository clubRepository,
         IClubMemberRepository memberRepository,
         IReservationRepository reservationRepository,
-        ICurrentUserService currentUserService)
+        ICurrentUserService currentUserService,
+        INotificationService notificationService)
     {
         _matchRepository = matchRepository;
         _clubRepository = clubRepository;
         _memberRepository = memberRepository;
         _reservationRepository = reservationRepository;
         _currentUserService = currentUserService;
+        _notificationService = notificationService;
     }
 
     /// <summary>Get all matches for a club.</summary>
@@ -264,6 +268,14 @@ public class MatchesController : ControllerBase
         }
 
         var updated = await _matchRepository.GetByIdAsync(id);
+
+        // Send match result notifications to all players
+        var resultSummary = request.ResultText ?? (request.WinnerTeam.HasValue ? $"Team {request.WinnerTeam} won" : "Result entered");
+        foreach (var player in updated!.Players)
+        {
+            await _notificationService.SendMatchResultNotificationAsync(player.UserId, id, resultSummary);
+        }
+
         return Ok(MapToResponse(updated!));
     }
 

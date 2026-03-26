@@ -6,6 +6,7 @@ using TennisManager.Application.Common.Interfaces;
 using TennisManager.Domain.Entities;
 using TennisManager.Domain.Enums;
 using TennisManager.Domain.Interfaces.Repositories;
+using TennisManager.Domain.Interfaces.Services;
 
 namespace TennisManager.API.Controllers;
 
@@ -19,6 +20,7 @@ public class ReservationsController : ControllerBase
     private readonly IClubMemberRepository _memberRepository;
     private readonly ICourtSettingsRepository _settingsRepository;
     private readonly ICurrentUserService _currentUserService;
+    private readonly INotificationService _notificationService;
 
     public ReservationsController(
         IReservationRepository reservationRepository,
@@ -26,7 +28,8 @@ public class ReservationsController : ControllerBase
         IClubRepository clubRepository,
         IClubMemberRepository memberRepository,
         ICourtSettingsRepository settingsRepository,
-        ICurrentUserService currentUserService)
+        ICurrentUserService currentUserService,
+        INotificationService notificationService)
     {
         _reservationRepository = reservationRepository;
         _courtRepository = courtRepository;
@@ -34,6 +37,7 @@ public class ReservationsController : ControllerBase
         _memberRepository = memberRepository;
         _settingsRepository = settingsRepository;
         _currentUserService = currentUserService;
+        _notificationService = notificationService;
     }
 
     /// <summary>Get all reservations for a club. Optionally filter by courtId and date.</summary>
@@ -151,6 +155,18 @@ public class ReservationsController : ControllerBase
         }
 
         var result = await _reservationRepository.GetByIdAsync(created.Id);
+
+        // Send confirmation notifications to all participants
+        var courtName = court.Name;
+        await _notificationService.SendReservationConfirmationAsync(userId.Value, created.Id, courtName, created.StartsAt, created.EndsAt);
+        if (request.ParticipantUserIds is not null)
+        {
+            foreach (var participantId in request.ParticipantUserIds.Distinct().Where(id => id != userId.Value))
+            {
+                await _notificationService.SendReservationConfirmationAsync(participantId, created.Id, courtName, created.StartsAt, created.EndsAt);
+            }
+        }
+
         return CreatedAtAction(nameof(GetById), new { clubId, id = created.Id }, MapToResponse(result!));
     }
 
@@ -244,6 +260,14 @@ public class ReservationsController : ControllerBase
         reservation.CancelledAt = DateTime.UtcNow;
         reservation.CancelledBy = userId.Value;
         await _reservationRepository.UpdateAsync(reservation);
+
+        // Send cancellation notifications to creator and all participants
+        var courtName = reservation.Court?.Name ?? string.Empty;
+        await _notificationService.SendReservationCancellationAsync(reservation.CreatedBy, reservation.Id, courtName, reservation.StartsAt);
+        foreach (var participant in reservation.Participants.Where(p => p.UserId != reservation.CreatedBy))
+        {
+            await _notificationService.SendReservationCancellationAsync(participant.UserId, reservation.Id, courtName, reservation.StartsAt);
+        }
 
         return NoContent();
     }
