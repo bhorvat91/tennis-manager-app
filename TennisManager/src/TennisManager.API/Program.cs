@@ -8,6 +8,8 @@ using TennisManager.Application.Authorization;
 using TennisManager.Application.Common.Interfaces;
 using TennisManager.Domain.Enums;
 using TennisManager.Domain.Interfaces.Repositories;
+using TennisManager.Domain.Interfaces.Services;
+using TennisManager.Infrastructure.Notifications;
 using TennisManager.Infrastructure.Persistence;
 using TennisManager.Infrastructure.Repositories;
 using TennisManager.Infrastructure.Services;
@@ -98,9 +100,11 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IReservationRepository, ReservationRepository>();
 builder.Services.AddScoped<IMatchRepository, MatchRepository>();
 builder.Services.AddScoped<ILeagueRepository, LeagueRepository>();
+builder.Services.AddScoped<INotificationRepository, NotificationRepository>();
 
 // Services
 builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
+builder.Services.AddScoped<INotificationService, NotificationService>();
 
 // CORS
 builder.Services.AddCors(options =>
