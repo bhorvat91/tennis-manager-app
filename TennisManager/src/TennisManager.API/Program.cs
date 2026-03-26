@@ -95,6 +95,7 @@ builder.Services.AddScoped<ICourtRepository, CourtRepository>();
 builder.Services.AddScoped<IClubMemberRepository, ClubMemberRepository>();
 builder.Services.AddScoped<ICourtSettingsRepository, CourtSettingsRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IReservationRepository, ReservationRepository>();
 
 // Services
 builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();

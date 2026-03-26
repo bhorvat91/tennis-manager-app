@@ -12,6 +12,8 @@ public class AppDbContext : DbContext
     public DbSet<ClubMember> ClubMembers => Set<ClubMember>();
     public DbSet<Court> Courts => Set<Court>();
     public DbSet<CourtSettings> CourtSettings => Set<CourtSettings>();
+    public DbSet<Reservation> Reservations => Set<Reservation>();
+    public DbSet<ReservationParticipant> ReservationParticipants => Set<ReservationParticipant>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
